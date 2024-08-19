@@ -13,6 +13,7 @@ export type HttpMethod =
 /** 認証情報オブジェクト */
 export interface AuthInfo {
   username: string;
+  organizationID: string;
   token: string;
 }
 

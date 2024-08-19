@@ -9,6 +9,7 @@ export class AuthInfoStore {
 
   authInfo: AuthInfo = {
     username: null,
+    organizationID: null,
     token: null,
   };
   backTo: string | null = null;
@@ -20,6 +21,7 @@ export class AuthInfoStore {
   ) {
     if (typeof window !== 'undefined') {
       this.authInfo.username = localStorage.getItem('username');
+      this.authInfo.organizationID = localStorage.getItem('organizationID');
       this.authInfo.token = localStorage.getItem('token');
       this.backTo = sessionStorage.getItem('backTo');
     }
@@ -27,7 +29,9 @@ export class AuthInfoStore {
 
   readonly isSignedIn = () => {
     const self = this.get();
-    return self.authInfo && self.authInfo.username && self.authInfo.token;
+    return (
+      self.authInfo && self.authInfo.username && self.authInfo.token && self.authInfo.organizationID
+    );
   };
 
   readonly setAuthInfo = (authInfo: AuthInfo) => {
@@ -37,6 +41,7 @@ export class AuthInfoStore {
 
         if (typeof window !== 'undefined') {
           localStorage.setItem('username', authInfo.username);
+          localStorage.setItem('organizationID', authInfo.organizationID);
           localStorage.setItem('token', authInfo.token);
         }
       })
@@ -47,10 +52,12 @@ export class AuthInfoStore {
     this.set(
       produce(this.get(), (draft) => {
         draft.authInfo.username = null;
+        draft.authInfo.organizationID = null;
         draft.authInfo.token = null;
 
         if (typeof window !== 'undefined') {
           localStorage.removeItem('username');
+          localStorage.removeItem('organizationID');
           localStorage.removeItem('token');
         }
       })
