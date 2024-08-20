@@ -34,6 +34,7 @@ import {
 import { Navigation } from '#app/components/navigation';
 import { Viewer, ViewerContainer } from '#app/components/viewer';
 import { CuboidCollectionModel } from '#app/components/viewer/cuboid-collection-model';
+import { successResponse } from 'spatial-id-svc-route';
 
 export interface AreaCreatorProps<WholeAreaInfo = any, AreaAdditionalInfo = any> {
   /** 単一エリアの追加の情報入力が必要な場合、その入力欄コンポーネント */
@@ -41,7 +42,7 @@ export interface AreaCreatorProps<WholeAreaInfo = any, AreaAdditionalInfo = any>
   /** エリア全体で追加の情報入力が必要な場合、その入力欄コンポーネント */
   wholeAreaInfoFragment?: React.FC<WholeAreaInfoFragmentProps<WholeAreaInfo>>;
   /** エリア登録を行う関数 */
-  register: (areas: IAreas<WholeAreaInfo, AreaAdditionalInfo>) => Promise<void>;
+  register: (areas: IAreas<WholeAreaInfo, AreaAdditionalInfo>) => Promise<void | successResponse>;
 }
 
 // main

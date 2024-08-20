@@ -19,6 +19,35 @@ export interface Barrier {
   barrierDefinitions: BarrierDefinition[];
   status: StreamStatus;
 }
+export interface BarrierDefinitionVoxel {
+  id: {
+    ID: 'string';
+  };
+  vacant: boolean;
+}
+
+export interface terrainBuildingDefinition {
+  reference: string;
+  voxelValues: BarrierDefinitionVoxel[];
+}
+export interface BarrierNew {
+  overwrite: boolean;
+  object: {
+    objectId?: string;
+    terrain?: terrainBuildingDefinition;
+    building?: terrainBuildingDefinition;
+    restrictedArea?: any;
+    emergencyArea?: any;
+    reserveArea?: any;
+    channel?: any;
+    overlayArea?: any;
+    weather?: any;
+    weatherForecast?: any;
+    microwave?: any;
+    groundRisk?: any;
+    ariRisk?: any;
+  };
+}
 
 export interface PrivateBarrier {
   id: string;
@@ -49,6 +78,23 @@ export interface GetBarrierResponse {
 
 export interface IdResponse {
   id: string;
+}
+
+export interface successResponse {
+  objectId: string;
+  error: string;
+}
+
+export interface ErrorDetails {
+  '@type': string;
+  property1: any;
+  property2: any;
+}
+
+export interface ErrorResponse {
+  code: number;
+  message: string;
+  details: ErrorDetails[];
 }
 
 export interface GetPrivateBarriersRequest {
@@ -124,7 +170,8 @@ export const getBarrier = async function* ({
 export interface CreateBarrierParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  payload: Barrier;
+  // payload: Barrier;
+  payload: BarrierNew;
   abortSignal?: AbortSignal;
 }
 
@@ -135,16 +182,17 @@ export const createBarrier = async ({
   payload,
   abortSignal,
 }: CreateBarrierParams) => {
-  const resp = await fetchRawJson<IdResponse>({
+  const resp = await fetchRawJson<successResponse | ErrorResponse>({
     method: 'POST',
     baseUrl,
-    path: '/route_service/barriers',
+    // path: '/route_service/barriers',
+    path: '/uas/api/airmobility/v3/put-object',
     authInfo,
     payload,
     abortSignal,
   });
-  if (resp.id === '0') {
-    throw new ApiResponseError('failed to create: returned id is 0');
+  if ('code' in resp) {
+    throw new ApiResponseError('failed to create: error occured with code ' + resp.code);
   }
   return resp;
 };
@@ -226,27 +274,28 @@ export const getPrivateBarrier = async function* ({
 export interface CreatePrivateBarrierParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  payload: PrivateBarrier;
+  // payload: PrivateBarrier;
+  payload: BarrierNew;
   abortSignal?: AbortSignal;
 }
 
 /** プライベートバリアを生成する */
-export const createPrivateBarrier = async ({
+export const createBuildingBarrier = async ({
   baseUrl,
   authInfo,
   payload,
   abortSignal,
 }: CreatePrivateBarrierParams) => {
-  const resp = await fetchRawJson<IdResponse>({
+  const resp = await fetchRawJson<successResponse | ErrorResponse>({
     method: 'POST',
     baseUrl,
-    path: '/route_service/private_barriers',
+    path: '/uas/api/airmobility/v3/put-object',
     authInfo,
     payload,
     abortSignal,
   });
-  if (resp.id === '0') {
-    throw new ApiResponseError('failed to create: returned id is 0');
+  if ('code' in resp) {
+    throw new ApiResponseError('failed to create: error occured with code ' + resp.code);
   }
   return resp;
 };

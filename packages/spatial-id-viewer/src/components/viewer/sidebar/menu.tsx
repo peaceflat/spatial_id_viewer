@@ -21,7 +21,7 @@ export const Menu = () => {
   return (
     <>
       <MenuCategory>
-        <MenuTitle>パブリックバリア</MenuTitle>
+        <MenuTitle>地形障壁</MenuTitle>
         <MenuEntry>
           <Link href="/barriers">表示・削除</Link>
         </MenuEntry>
@@ -31,12 +31,12 @@ export const Menu = () => {
       </MenuCategory>
 
       <MenuCategory>
-        <MenuTitle>プライベートバリア</MenuTitle>
+        <MenuTitle>建物の障壁</MenuTitle>
         <MenuEntry>
-          <Link href="/private-barriers">表示・削除</Link>
+          <Link href="/building-barriers">表示・削除</Link>
         </MenuEntry>
         <MenuEntry>
-          <Link href="/private-barriers/create">生成</Link>
+          <Link href="/building-barriers/create">生成</Link>
         </MenuEntry>
       </MenuCategory>
 
