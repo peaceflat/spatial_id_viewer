@@ -17,7 +17,7 @@ const useRegister = () => {
 
   const register = useCallback(async (areas: IAreas<never, AreaAdditionalInfo>) => {
     const payload = {
-      overwrite: true,
+      overwrite: false,
       object: {
         terrain: {
           reference: 'WGS84',

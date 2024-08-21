@@ -18,7 +18,7 @@ const useRegister = () => {
 
   const register = useCallback(async (areas: IAreas<WholeAreaInfo, AreaAdditionalInfo>) => {
     const payload = {
-      overwrite: true,
+      overwrite: false,
       object: {
         building: {
           reference: 'BTS84',
