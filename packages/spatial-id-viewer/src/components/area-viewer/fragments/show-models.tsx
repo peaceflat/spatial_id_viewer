@@ -14,11 +14,12 @@ import {
 import { useInterval, useUpdateEffect } from 'react-use';
 import { useStore } from 'zustand';
 
-import { getGeoidHeight, SpatialId } from 'spatial-id-converter';
+import { Figure, getGeoidHeight, SpatialId } from 'spatial-id-converter';
 
 import { Pages, useStoreApi } from '#app/components/area-viewer/store';
 import { NavigationButtons } from '#app/components/navigation';
 import { useStateRef } from '#app/hooks/state-ref';
+import { createFigure } from '#app/utils/create-figure';
 import { replaceNaN } from '#app/utils/replace-nan';
 import { warnIfTokenExpired } from '#app/utils/warn-if-token-expired';
 
@@ -32,8 +33,7 @@ export const useViewingBoxTile = () => {
   const store = useStoreApi();
   const computeViewRectangle = useStore(store, (s) => s.viewerCtrls.computeViewRectangle);
   const getEllipsoidHeight = useStore(store, (s) => s.viewerCtrls.getEllipsoidHeight);
-
-  const [spatialId, setSpatialId] = useStateRef<SpatialId | null>(null);
+  const [figure, setFigure] = useStateRef<Figure | null>(null);
   const rectRef = useRef<Rectangle>();
 
   const get = useCallback(async () => {
@@ -44,7 +44,7 @@ export const useViewingBoxTile = () => {
 
     // 表示範囲に変更がないときは処理しない
     if (deepEqual(rect, rectRef.current)) {
-      return spatialId.current;
+      return figure.current;
     }
     rectRef.current = rect;
 
@@ -54,34 +54,69 @@ export const useViewingBoxTile = () => {
     const altitude = replaceNaN(height - geoidHeight, 0);
     const point1 = Cartographic.fromRadians(rect.west, rect.north);
     const point2 = Cartographic.fromRadians(rect.east, rect.south);
+
+    const tubeStart = {
+      latitude: point1.latitude,
+      longitude: point1.longitude,
+      altitude: altitude,
+      altitudeAttribute: 'ALTITUDE_ATTRIBUTE_ELLIPSOID', // Adjust as needed
+    };
+
+    const tubeEnd = {
+      latitude: point2.latitude,
+      longitude: point2.longitude,
+      altitude: altitude,
+      altitudeAttribute: 'ALTITUDE_ATTRIBUTE_ELLIPSOID', // Adjust as needed
+    };
+
     // point1 と point2 の両方が収まる最小のタイルを取得
     for (let tileZ = MAX_Z; tileZ >= MIN_Z; tileZ--) {
       const tile1 = new WebMercatorTilingScheme().positionToTileXY(point1, tileZ);
       const tile2 = new WebMercatorTilingScheme().positionToTileXY(point2, tileZ);
       if (tile1 && tile2 && tile1.equals(tile2)) {
         const tileF = Math.floor((2 ** tileZ * altitude) / 2 ** 25);
-        return new SpatialId(tileZ, tileF, tile1.x, tile1.y);
+
+        const Fig = createFigure(
+          new SpatialId(tileZ, tileF, tile1.x, tile1.y),
+          tubeStart,
+          tubeEnd,
+          0,
+          {}
+        );
+        return Fig;
+        // return new SpatialId(tileZ, tileF, tile1.x, tile1.y);
       }
     }
 
     // 最大の範囲 (MIN_Z) にも収まらなかったときは、中央の座標を含む tileZ: MIN_Z の範囲を取得
     const tileCenter = new WebMercatorTilingScheme().positionToTileXY(pointCenter, MIN_Z);
     const tileF = Math.floor((2 ** MIN_Z * altitude) / 2 ** 25);
-    return new SpatialId(MIN_Z, tileF, tileCenter.x, tileCenter.y);
+
+    const Figure = createFigure(
+      new SpatialId(MIN_Z, tileF, tileCenter.x, tileCenter.y),
+      tubeStart,
+      tubeEnd,
+      0,
+      {}
+    );
+
+    return Figure;
+    // return new SpatialId(MIN_Z, tileF, tileCenter.x, tileCenter.y);
   }, []);
 
   // camera.changed で取れる表示範囲変更イベントでは漏れがあるようなので、タイマーで実装
   useInterval(async () => {
-    const newSpatialId = await get();
-    if (!deepEqual(newSpatialId, spatialId.current)) {
-      setSpatialId(newSpatialId);
+    const newFigure = await get();
+    if (!deepEqual(newFigure, figure.current)) {
+      setFigure(newFigure);
     }
   }, 500);
 
-  return spatialId.current;
+  return figure.current;
 };
 
 export interface ShowModelsFragmentProps {
+  requestType?: string;
   children?: ReactNode;
 }
 
@@ -92,7 +127,7 @@ const States = {
 type States = (typeof States)[keyof typeof States];
 
 /** 複数取得系 API を呼び、モデルを 1 つ表示させる画面 */
-export const ShowModelsFragment = memo(({ children }: ShowModelsFragmentProps) => {
+export const ShowModelsFragment = memo(({ requestType, children }: ShowModelsFragmentProps) => {
   const store = useStoreApi();
   const featureName = useStore(store, (s) => s.featureName);
   const isFunctionSelectable = useStore(store, (s) => s.isFunctionSelectable());
@@ -111,7 +146,7 @@ export const ShowModelsFragment = memo(({ children }: ShowModelsFragmentProps) =
 
   useEffect(() => {
     if (isTileFAuto && vbox) {
-      setTileF(vbox.f);
+      setTileF(vbox.identification.ID.f);
     }
   }, [isTileFAuto, vbox]);
 
@@ -128,14 +163,19 @@ export const ShowModelsFragment = memo(({ children }: ShowModelsFragmentProps) =
   }, [errorOutsidePromise]);
 
   const onLoadModelsClick = async () => {
-    let box = vbox;
+    const figure = JSON.parse(JSON.stringify(vbox));
     if (!isTileFAuto) {
-      box = new SpatialId(vbox.z, tileF, vbox.x, vbox.y);
+      figure.identification.ID.f = tileF;
     }
+
+    const displayDetails = {
+      figure: figure,
+      requestType: [requestType],
+    };
 
     setLoading(true);
     try {
-      await loadModels(box);
+      await loadModels(displayDetails);
     } catch (e) {
       console.error(e);
       warnIfTokenExpired(e);
@@ -232,7 +272,8 @@ export const ShowModelsFragment = memo(({ children }: ShowModelsFragmentProps) =
             取得範囲 (z/f/x/y):{' '}
             {vbox ? (
               <>
-                {vbox.z}/{tileF}/{vbox.x}/{vbox.y}
+                {vbox.identification.ID.z}/{tileF}/{vbox.identification.ID.x}/
+                {vbox.identification.ID.y}
               </>
             ) : (
               'Loading...'
