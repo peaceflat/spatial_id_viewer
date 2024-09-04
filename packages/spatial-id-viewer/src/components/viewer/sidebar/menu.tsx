@@ -58,9 +58,9 @@ export const Menu = () => {
         <MenuEntry>
           <Link href="/blocked-areas/create">生成</Link>
         </MenuEntry>
-        <MenuEntry>
+        {/* <MenuEntry>
           <Link href="/blocked-areas/auto-create">位置情報による自動生成</Link>
-        </MenuEntry>
+        </MenuEntry> */}
       </MenuCategory>
 
       <MenuCategory>
