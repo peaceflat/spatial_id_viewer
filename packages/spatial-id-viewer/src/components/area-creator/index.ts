@@ -4,5 +4,6 @@ export type {
   AreaAdditionalInfoFragmentProps,
   IArea,
   IAreas,
+  RestrictionTypeFragmentProps,
   WholeAreaInfoFragmentProps,
 } from './store';
