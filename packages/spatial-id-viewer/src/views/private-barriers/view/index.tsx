@@ -12,7 +12,7 @@ import { DisplayDetails } from '#app/components/area-viewer/interface';
 import { WithAuthGuard } from '#app/components/auth-guard';
 import { apiBaseUrl } from '#app/constants';
 import { useAuthInfo } from '#app/stores/auth-info';
-import { BuildingBarrierInfo, processBarriers } from '#app/utils/create-process-barrier-map';
+import { Info, processBarriers } from '#app/utils/create-process-barrier-map';
 
 /** ID を指定してモデルを 1 件取得する関数を返す React Hook */
 const useLoadModel = () => {
@@ -28,7 +28,7 @@ const useLoadModel = () => {
       throw new Error(`private barrier ${id} not found in response`);
     }
 
-    const model = new CuboidCollection<BuildingBarrierInfo>(
+    const model = new CuboidCollection<Info>(
       await Promise.all([...barrier.values()].map((b) => b.createCuboid()))
     );
     return model;
@@ -62,7 +62,7 @@ const useLoadModels = () => {
               await Promise.all([...spatialIds.values()].map((s) => s.createCuboid()))
             ),
           ])
-      )) as [string, CuboidCollection<BuildingBarrierInfo>][]
+      )) as [string, CuboidCollection<Info>][]
     );
 
     return models;

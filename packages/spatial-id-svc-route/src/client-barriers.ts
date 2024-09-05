@@ -38,12 +38,24 @@ export interface restrictedAreaDefinition {
   voxelValues: BarrierDefinitionVoxel[];
 }
 
+export interface emergencyAreaDefinition {
+  reference: string;
+  voxelValues: EmergencyAreaVoxels[];
+}
+
+export interface EmergencyAreaVoxels {
+  id: {
+    ID: 'string';
+  };
+  vacant: boolean;
+}
+
 export interface SpatialDefinition {
   objectId?: string;
   terrain?: terrainBuildingDefinition;
   building?: terrainBuildingDefinition;
   restrictedArea?: restrictedAreaDefinition;
-  emergencyArea?: any;
+  emergencyArea?: emergencyAreaDefinition;
   reserveArea?: any;
   channel?: any;
   overlayArea?: any;

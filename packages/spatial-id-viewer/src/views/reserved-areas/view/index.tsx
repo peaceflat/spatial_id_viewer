@@ -7,14 +7,17 @@ import { useStore } from 'zustand';
 import { CuboidCollection, SpatialId } from 'spatial-id-converter';
 import {
   deleteReservedArea,
+  GetEmergencyAreas,
   getReservedArea,
   getReservedAreas,
   GetReservedAreasResponse,
   ReservedArea,
 } from 'spatial-id-svc-area';
 import { StreamResponse } from 'spatial-id-svc-base';
+import { RequestTypes } from 'spatial-id-svc-common';
 
 import { AreaViewer, createUseModels } from '#app/components/area-viewer';
+import { DisplayDetails } from '#app/components/area-viewer/interface';
 import { WithAuthGuard } from '#app/components/auth-guard';
 import { apiBaseUrl } from '#app/constants';
 import { useAuthInfo } from '#app/stores/auth-info';
@@ -27,23 +30,20 @@ import { useStoreApi, WithStore } from '#app/views/reserved-areas/view/store';
 interface ReservedAreaInfo extends Record<string, unknown> {
   id: string;
   spatialId: string;
-  startTime: string;
-  endTime: string;
 }
 
-const processReservedArea = (id: string, area: ReservedArea) => {
+const processReservedArea = (area: any, type: string) => {
+  const areaId = area.objectId;
   const spatialIds = new Map<string, SpatialId<ReservedAreaInfo>>();
-  for (const spatialIdent of area.spatialIdentifications) {
-    const spatialId = spatialIdent.ID;
+  for (const spatialIdent of area[type].voxelValues) {
+    const spatialId = spatialIdent.id.ID;
 
     try {
       spatialIds.set(
         spatialId,
         SpatialId.fromString<ReservedAreaInfo>(spatialId, {
-          id,
+          id: areaId,
           spatialId,
-          startTime: area.startTime,
-          endTime: area.endTime,
         })
       );
     } catch (e) {
@@ -54,19 +54,20 @@ const processReservedArea = (id: string, area: ReservedArea) => {
 };
 
 const processReservedAreas = async (
-  result: AsyncGenerator<StreamResponse<GetReservedAreasResponse>>
+  result: AsyncGenerator<StreamResponse<GetEmergencyAreas>>,
+  type: string
 ) => {
   const areas = new Map<string, Map<string, SpatialId<ReservedAreaInfo>>>();
   for await (const resp of result) {
-    for (const area of resp.result.reservedAreas) {
-      const areaId = area.id;
+    for (const area of resp.result.objects) {
+      const areaId = area.objectId;
       const spatialIds = mapGetOrSet(
         areas,
         areaId,
         () => new Map<string, SpatialId<ReservedAreaInfo>>()
       );
 
-      for (const [key, value] of processReservedArea(areaId, area).entries()) {
+      for (const [key, value] of processReservedArea(area, type).entries()) {
         spatialIds.set(key, value);
       }
     }
@@ -81,8 +82,8 @@ const useLoadModel = () => {
 
   const loadModel = useCallback(async (id: string) => {
     const spatialIds = processReservedArea(
-      id,
-      (await getReservedArea({ baseUrl: apiBaseUrl, authInfo: authInfo.current, id })).reservedArea
+      (await getReservedArea({ baseUrl: apiBaseUrl, authInfo: authInfo.current, id })).result,
+      'emergencyArea'
     );
 
     const model = new CuboidCollection<ReservedAreaInfo>(
@@ -97,28 +98,21 @@ const useLoadModel = () => {
 
 /** 空間 ID で範囲を指定してモデルを複数取得する関数を返す React Hook */
 const useLoadModels = () => {
-  const store = useStoreApi();
-  const startTime = useLatest(useStore(store, (s) => s.startTime));
-  const endTime = useLatest(useStore(store, (s) => s.endTime));
+  // const store = useStoreApi();
+  // const startTime = useLatest(useStore(store, (s) => s.startTime));
+  // const endTime = useLatest(useStore(store, (s) => s.endTime));
 
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
-  const loadModels = useCallback(async (bbox: SpatialId) => {
+  const loadModels = useCallback(async (displayDetails: DisplayDetails) => {
+    displayDetails.figure.identification.ID = displayDetails.figure.identification.ID.toString();
     const areas = await processReservedAreas(
       getReservedAreas({
         baseUrl: apiBaseUrl,
         authInfo: authInfo.current,
-        payload: {
-          boundary: [
-            {
-              ID: bbox.toString(),
-            },
-          ],
-          hasSpatialId: true,
-          startTime: dateToStringUnixTime(startTime.current),
-          endTime: dateToStringUnixTime(endTime.current),
-        },
-      })
+        payload: displayDetails,
+      }),
+      'emergencyArea'
     );
 
     const models = new Map(
@@ -165,9 +159,14 @@ const ReservedAreasViewer = () => {
   return (
     <>
       <Head>
-        <title>飛行エリア予約表示・削除</title>
+        <title>緊急エリア予約の表示・削除</title>
       </Head>
-      <AreaViewer featureName="飛行エリア予約" useModels={useModels} tilesetStyle={tilesetStyle}>
+      <AreaViewer
+        featureName="緊急エリアの予約"
+        useModels={useModels}
+        tilesetStyle={tilesetStyle}
+        requestType={RequestTypes.EMERGENCY_AREA}
+      >
         <AdditionalSettings />
       </AreaViewer>
     </>

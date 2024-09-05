@@ -41,12 +41,12 @@ export const Menu = () => {
       </MenuCategory>
 
       <MenuCategory>
-        <MenuTitle>飛行エリア予約</MenuTitle>
+        <MenuTitle>緊急エリア</MenuTitle> {/*Changed Flight Area reservation to emergency area*/}
         <MenuEntry>
-          <Link href="/reserved-areas">表示・削除</Link>
+          <Link href="/emergency-areas">表示・削除</Link>
         </MenuEntry>
         <MenuEntry>
-          <Link href="/reserved-areas/create">生成</Link>
+          <Link href="/emergency-areas/create">生成</Link>
         </MenuEntry>
       </MenuCategory>
 
