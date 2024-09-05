@@ -51,7 +51,7 @@ export const Menu = () => {
       </MenuCategory>
 
       <MenuCategory>
-        <MenuTitle>割込禁止エリア予約</MenuTitle>
+        <MenuTitle>立ち入り禁止エリア</MenuTitle>
         <MenuEntry>
           <Link href="/blocked-areas">表示・削除</Link>
         </MenuEntry>

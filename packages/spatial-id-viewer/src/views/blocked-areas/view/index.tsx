@@ -197,7 +197,7 @@ const useDeleteModel = () => {
 
 /** モデルに関連する操作を行う関数群を返す React Hook */
 const useModels = (store: IStore<BlockedAreaInfo>): ModelControllers => {
-  const updateModels = useLatest(store.replaceModels);
+  // const updateModels = useLatest(store.replaceModels);
 
   const loadModelImpl = useLoadModel();
   const loadModelsImpl = useLoadModels();
@@ -268,10 +268,10 @@ const BlockedAreasViewer = () => {
   return (
     <>
       <Head>
-        <title>割込禁止エリア予約表示・削除</title>
+        <title>制限エリアの予約表示・削除</title>
       </Head>
       <AreaViewer
-        featureName="割込禁止エリア予約"
+        featureName="制限エリア予約"
         useModels={useModels}
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.RESTRICTED_AREA}
