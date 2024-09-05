@@ -62,7 +62,7 @@ const BlockedAreaCreator = () => {
   return (
     <>
       <Head>
-        <title>割込禁止エリア予約生成</title>
+        <title>制限エリアの予約を生成する</title>
       </Head>
       <AreaCreator<WholeAreaInfo, never, RestrictionAdditionalInfo>
         register={register}
