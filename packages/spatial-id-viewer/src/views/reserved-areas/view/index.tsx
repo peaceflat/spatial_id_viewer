@@ -105,7 +105,14 @@ const useLoadModels = () => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadModels = useCallback(async (displayDetails: DisplayDetails) => {
-    displayDetails.figure.identification.ID = displayDetails.figure.identification.ID.toString();
+    const spatialID = displayDetails.figure.identification.ID;
+    const newSpatialID = new SpatialId(
+      spatialID.z,
+      spatialID.f,
+      spatialID.x,
+      spatialID.y
+    ).toString();
+    displayDetails.figure.identification.ID = newSpatialID;
     const areas = await processReservedAreas(
       getReservedAreas({
         baseUrl: apiBaseUrl,
@@ -167,7 +174,7 @@ const ReservedAreasViewer = () => {
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.EMERGENCY_AREA}
       >
-        <AdditionalSettings />
+        {/* <AdditionalSettings /> */}
       </AreaViewer>
     </>
   );
