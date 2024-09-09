@@ -64,6 +64,16 @@ export const Menu = () => {
       </MenuCategory>
 
       <MenuCategory>
+        <MenuTitle>オーバーレイエリア</MenuTitle>
+        <MenuEntry>
+          <Link href="/overlay-areas">表示・削除</Link>
+        </MenuEntry>
+        <MenuEntry>
+          <Link href="/overlay-areas/create">生成</Link>
+        </MenuEntry>
+      </MenuCategory>
+
+      <MenuCategory>
         <MenuTitle>予約ルート</MenuTitle>
         <MenuEntry>
           <Link href="/reserved-routes">表示・削除</Link>

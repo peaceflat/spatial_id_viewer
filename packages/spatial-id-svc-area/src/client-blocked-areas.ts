@@ -13,7 +13,7 @@ export interface BlockedAreaRquest {
   object: SpatialDefinition;
 }
 
-export interface RestrictedAreaVoxels {
+export interface AreaVoxel {
   id: {
     ID: 'string';
   };
@@ -27,13 +27,23 @@ export interface EmergencyAreaVoxels {
 export interface restrictedAreaDefinition {
   reference: string;
   type: string;
-  voxelValues: RestrictedAreaVoxels[];
+  voxelValues: AreaVoxel[];
 }
 
 export interface emergencyAreaDefinition {
   reference: string;
   voxelValues: EmergencyAreaVoxels[];
 }
+
+export interface overlayAreaDefinition {
+  ownerAddress: {
+    grpc: 'string';
+    rest: 'string';
+    other: 'string';
+  };
+  voxelValues: AreaVoxel[];
+}
+
 export interface SpatialDefinition {
   objectId?: string;
   terrain?: any;
@@ -42,7 +52,7 @@ export interface SpatialDefinition {
   emergencyArea?: emergencyAreaDefinition;
   reserveArea?: any;
   channel?: any;
-  overlayArea?: any;
+  overlayArea?: overlayAreaDefinition;
   weather?: any;
   weatherForecast?: any;
   microwave?: any;
