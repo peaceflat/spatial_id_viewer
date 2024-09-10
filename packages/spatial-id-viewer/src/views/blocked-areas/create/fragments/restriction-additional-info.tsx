@@ -59,6 +59,7 @@ export const RestrictiontypeFragment = memo(
             id={restrictionTypeId}
             value={selectedRestrictionType ?? ''}
             onChange={onRestrictionTypeChange}
+            style={{ color: '#3b3a3a' }}
           >
             {Object.values(RestrictionTypes).map((type) => (
               <option key={type} value={type}>
