@@ -116,6 +116,7 @@ const AreaCreatorLayout = <
     const ray = viewerRef.current.cesiumElement.camera.getPickRay(position);
     const scene = viewerRef.current.cesiumElement.scene;
     const clickedPoint = scene.globe.pick(ray, scene);
+    console.log(clickedPoint);
     if (clickedPoint === undefined) {
       return;
     }

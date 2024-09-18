@@ -1,8 +1,10 @@
 import {
+  ApiResponseError,
   AuthInfo,
   CommonResponseHeader,
   fetchJson,
   fetchJsonStream,
+  fetchRawJson,
   StreamStatus,
 } from 'spatial-id-svc-base';
 import { Point, SpatialIdentification } from 'spatial-id-svc-common';
@@ -61,11 +63,45 @@ export interface CreateReservedRouteRequest {
   ignoreSpatialId: boolean;
 }
 
+export interface CreateReservedRouteRequestV3 {
+  overwrite: boolean;
+  area: routeArea[];
+}
+
+export interface routeArea {
+  id: {
+    ID: string;
+  };
+  reservationTime: {
+    period: {
+      startTime?: Date;
+      endTime?: Date;
+    };
+    occupation: string;
+    reserveId: string;
+  };
+}
 export interface CreateReservedRouteResponse {
-  responseHeader: CommonResponseHeader;
+  responseHeader?: CommonResponseHeader;
   result: RouteResponseResult;
   status: StreamStatus;
   reservedRouteId: string;
+}
+
+export interface successResponse {
+  objectId: string;
+  error: string;
+}
+export interface ErrorResponse {
+  code: number;
+  message: string;
+  details: ErrorDetails[];
+}
+
+export interface ErrorDetails {
+  '@type': string;
+  property1: any;
+  property2: any;
 }
 
 export interface GetReservedRoutesRequest {
@@ -257,25 +293,46 @@ export const createRoute = async function* ({
 export interface CreateReservedRouteParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  payload: CreateReservedRouteRequest;
+  // payload: CreateReservedRouteRequest;
+  payload: CreateReservedRouteRequestV3;
   abortSignal?: AbortSignal;
 }
 
 /** 予約ルートを生成する */
-export const createReservedRoute = async function* ({
+// export const createReservedRoute = async function* ({
+//   baseUrl,
+//   authInfo,
+//   payload,
+//   abortSignal,
+// }: CreateReservedRouteParams) {
+//   for await (const chunk of fetchJsonStream<CreateReservedRouteResponse>({
+//     method: 'POST',
+//     baseUrl,
+//     path: `uas/api/airmobility/v3/put-reserve-area`,
+//     authInfo,
+//     payload,
+//     abortSignal,
+//   })) {
+//     yield chunk;
+//   }
+// };
+
+export const createReservedRoute = async ({
   baseUrl,
   authInfo,
   payload,
   abortSignal,
-}: CreateReservedRouteParams) {
-  for await (const chunk of fetchJsonStream<CreateReservedRouteResponse>({
+}: CreateReservedRouteParams) => {
+  const resp = await fetchRawJson<successResponse | ErrorResponse>({
     method: 'POST',
     baseUrl,
-    path: `/route_service/reserved_routes`,
+    path: '/uas/api/airmobility/v3/put-reserve-area',
     authInfo,
     payload,
     abortSignal,
-  })) {
-    yield chunk;
+  });
+  if ('code' in resp) {
+    throw new ApiResponseError('failed to create: error occured with code ' + resp.code);
   }
+  return resp;
 };

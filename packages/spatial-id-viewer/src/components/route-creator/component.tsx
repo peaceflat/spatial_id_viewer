@@ -16,11 +16,14 @@ import {
 } from 'resium';
 import { useStore } from 'zustand';
 
+import { successResponse } from 'spatial-id-svc-route/src/client-routes';
+
 import { Navigation } from '#app/components/navigation';
 import { InputAltitudeFragment } from '#app/components/route-creator/fragments/input-altitude';
 import { InputDefaultAltitudeFragment } from '#app/components/route-creator/fragments/input-default-altitude';
 import { MovePointFragment } from '#app/components/route-creator/fragments/move-point';
 import { RegisterFragment } from '#app/components/route-creator/fragments/register';
+import { RouteInfoProxyFragment } from '#app/components/route-creator/fragments/route-info-proxy';
 import { SelectActionForPointFragment } from '#app/components/route-creator/fragments/select-action-for-point';
 import { SelectPointOrFeatureFragment } from '#app/components/route-creator/fragments/select-point-or-feature';
 import { SplitLineFragment } from '#app/components/route-creator/fragments/split-line';
@@ -29,6 +32,7 @@ import { WholeRouteInfoProxyFragment } from '#app/components/route-creator/fragm
 import {
   IWaypoints,
   Pages,
+  RouteInfoFragmentProps,
   useStoreApi,
   WaypointAdditionalInfoFragmentProps,
   WholeRouteInfoFragmentProps,
@@ -36,24 +40,33 @@ import {
 } from '#app/components/route-creator/store';
 import { Viewer, ViewerContainer } from '#app/components/viewer';
 
-export interface RouteCreatorProps<WholeRouteInfo = any, WaypointAdditionalInfo = any> {
+export interface RouteCreatorProps<
+  WholeRouteInfo = any,
+  RouteInfo = any,
+  WaypointAdditionalInfo = any
+> {
   waypointAdditionalInfoFragment?: React.FC<
     WaypointAdditionalInfoFragmentProps<WaypointAdditionalInfo>
   >;
   wholeRouteInfoFragment?: React.FC<WholeRouteInfoFragmentProps<WholeRouteInfo>>;
-  register: (features: IWaypoints<WholeRouteInfo, WaypointAdditionalInfo>) => Promise<void>;
+  routeInfoFragment?: React.FC<RouteInfoFragmentProps<RouteInfo>>;
+  register: (
+    features: IWaypoints<WholeRouteInfo, RouteInfo, WaypointAdditionalInfo>
+  ) => Promise<void | successResponse>;
 }
 
 // main
 const RouteCreatorLayout = <
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
   WholeRouteInfo extends any = any,
+  RouteInfo = any,
   RouteAdditionalInfo = any
 >({
   waypointAdditionalInfoFragment,
+  routeInfoFragment,
   wholeRouteInfoFragment,
   register,
-}: RouteCreatorProps<WholeRouteInfo, RouteAdditionalInfo>) => {
+}: RouteCreatorProps<WholeRouteInfo, RouteInfo, RouteAdditionalInfo>) => {
   const viewerRef = useRef<CesiumComponentRef<CesiumViewer>>();
 
   const store = useStoreApi();
@@ -62,10 +75,15 @@ const RouteCreatorLayout = <
   const selectedFeature = useStore(store, (s) => s.waypoints.selected);
   const pointingFeature = useStore(store, (s) => s.waypoints.pointing);
   const update = useStore(store, (s) => s.update);
+  console.log(waypoints);
 
   useEffect(
     () => void update((s) => (s.wholeRouteInfoFragment = wholeRouteInfoFragment)),
     [wholeRouteInfoFragment]
+  );
+  useEffect(
+    () => void update((s) => (s.routeInfoFragment = routeInfoFragment)),
+    [routeInfoFragment]
   );
   useEffect(
     () => void update((s) => (s.waypointAdditionalInfoFragment = waypointAdditionalInfoFragment)),
@@ -79,12 +97,15 @@ const RouteCreatorLayout = <
     }
 
     const position = (ev as CesiumScreenSpaceEventHandler.PositionedEvent).position;
+    console.log('position', position);
     const object = viewerRef.current.cesiumElement.scene.pick(position);
     update((s) => s.waypoints.applyToClicked(object));
+    console.log('object', object);
 
     const ray = viewerRef.current.cesiumElement.camera.getPickRay(position);
     const scene = viewerRef.current.cesiumElement.scene;
     const clickedPoint = scene.globe.pick(ray, scene);
+    console.log('clickedPoint', clickedPoint);
     if (clickedPoint !== undefined) {
       update((s) => (s.clickedPoint = clickedPoint));
     }
@@ -186,7 +207,8 @@ const RouteCreatorLayout = <
         {page === Pages.SplitLine && <SplitLineFragment />}
         {page === Pages.SelectActionForPoint && <SelectActionForPointFragment />}
         {page === Pages.MovePoint && <MovePointFragment />}
-        {page === Pages.InputWholeRouteInfo && <WholeRouteInfoProxyFragment />}
+        {/* {page === Pages.InputWholeRouteInfo && <WholeRouteInfoProxyFragment />} */}
+        {page === Pages.InputRouteInfo && <RouteInfoProxyFragment />}
         {page === Pages.Register && <RegisterFragment />}
       </Navigation>
     </ViewerContainer>
