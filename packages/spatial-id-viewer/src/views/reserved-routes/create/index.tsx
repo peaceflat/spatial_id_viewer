@@ -70,7 +70,14 @@ const useRegister = () => {
     // } as CreateReservedRouteRequest;
     const payload = {
       overwrite: false,
-      area: waypointsForApi,
+      // area: waypointsForApi,
+      object: {
+        reserveArea: {
+          ownerId: 'thinira',
+          reservationTime: waypointsForApi[0].reservationTime,
+          voxelValues: waypointsForApi,
+        },
+      },
     };
     console.log(payload);
 

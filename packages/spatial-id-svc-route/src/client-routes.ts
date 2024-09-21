@@ -1,3 +1,5 @@
+import { SpatialDefinition, SpatialFigure } from 'src/client-barriers';
+
 import {
   ApiResponseError,
   AuthInfo,
@@ -65,7 +67,7 @@ export interface CreateReservedRouteRequest {
 
 export interface CreateReservedRouteRequestV3 {
   overwrite: boolean;
-  area: routeArea[];
+  object: SpatialDefinition;
 }
 
 export interface routeArea {
@@ -111,12 +113,20 @@ export interface GetReservedRoutesRequest {
   endTime: string;
   hasRoutes: boolean;
 }
+export interface GetReservedRoutesRequestV3 {
+  figure: SpatialFigure;
+  requestType: string[];
+}
 
 export interface GetReservedRoutesResponse {
   responseHeader: CommonResponseHeader;
   reservedRouteId: string;
   status: StreamStatus;
   routes: Route[];
+}
+export interface GetReservedRoutesResponseV3 {
+  responseHeader?: CommonResponseHeader;
+  objects: SpatialDefinition[];
 }
 
 export interface GetAircraftsRequest {
@@ -136,9 +146,15 @@ export interface GetReservedIdResponse {
 }
 
 export interface GetReservedRouteResponse {
-  responseHeader: CommonResponseHeader;
+  responseHeader?: CommonResponseHeader;
   reservedRouteId: string;
   routes: Route[];
+}
+
+export interface GetReservedRouteResponseV3 {
+  responseHeader?: CommonResponseHeader;
+  result: SpatialDefinition;
+  error: ErrorResponse;
 }
 
 export interface GetReservedRoutesParams {
@@ -148,17 +164,41 @@ export interface GetReservedRoutesParams {
   abortSignal?: AbortSignal;
 }
 
+export interface GetReservedRoutesParamsV3 {
+  baseUrl: string;
+  authInfo: AuthInfo;
+  payload: GetReservedRoutesRequestV3;
+  abortSignal?: AbortSignal;
+}
 /** 空間 ID の範囲内の予約ルートを複数取得する */
+// export const getReservedRoutes = async function* ({
+//   baseUrl,
+//   authInfo,
+//   payload,
+//   abortSignal,
+// }: GetReservedRoutesParams) {
+//   for await (const chunk of fetchJsonStream<GetReservedRoutesResponse>({
+//     method: 'POST',
+//     baseUrl,
+//     path: '/route_service/reserved_routes_list',
+//     authInfo,
+//     payload,
+//     abortSignal,
+//   })) {
+//     yield chunk;
+//   }
+// };
+
 export const getReservedRoutes = async function* ({
   baseUrl,
   authInfo,
   payload,
   abortSignal,
-}: GetReservedRoutesParams) {
-  for await (const chunk of fetchJsonStream<GetReservedRoutesResponse>({
+}: GetReservedRoutesParamsV3) {
+  for await (const chunk of fetchJsonStream<GetReservedRoutesResponseV3>({
     method: 'POST',
     baseUrl,
-    path: '/route_service/reserved_routes_list',
+    path: '/uas/api/airmobility/v3/get-value',
     authInfo,
     payload,
     abortSignal,
@@ -170,22 +210,39 @@ export const getReservedRoutes = async function* ({
 export interface GetReservedRouteParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  reservedRouteId: string;
+  // reservedRouteId: string;
+  id: string;
   abortSignal?: AbortSignal;
 }
 
 /** ID を指定して予約ルートを 1 件取得する */
+// export const getReservedRoute = async ({
+//   baseUrl,
+//   authInfo,
+//   reservedRouteId,
+//   abortSignal,
+// }: GetReservedRouteParams) => {
+//   return await fetchJson<GetReservedRouteResponse>({
+//     method: 'GET',
+//     baseUrl,
+//     path: `/route_service/reserved_routes/${encodeURIComponent(reservedRouteId)}`,
+//     authInfo,
+//     abortSignal,
+//   });
+// };
+
 export const getReservedRoute = async ({
   baseUrl,
   authInfo,
-  reservedRouteId,
+  id,
   abortSignal,
 }: GetReservedRouteParams) => {
-  return await fetchJson<GetReservedRouteResponse>({
-    method: 'GET',
+  return await fetchJson<GetReservedRouteResponseV3>({
+    method: 'POST',
     baseUrl,
-    path: `/route_service/reserved_routes/${encodeURIComponent(reservedRouteId)}`,
+    path: `/uas/api/airmobility/v3/get-object`,
     authInfo,
+    payload: { objectId: id },
     abortSignal,
   });
 };
@@ -193,7 +250,8 @@ export const getReservedRoute = async ({
 export interface DeleteReservedRouteParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  reservedRouteId: string;
+  // reservedRouteId: string;
+  id: string;
   abortSignal?: AbortSignal;
 }
 
@@ -201,14 +259,15 @@ export interface DeleteReservedRouteParams {
 export const deleteReservedRoute = async ({
   baseUrl,
   authInfo,
-  reservedRouteId,
+  id,
   abortSignal,
 }: DeleteReservedRouteParams) => {
   await fetchJson({
-    method: 'DELETE',
+    method: 'POST',
     baseUrl,
-    path: `/route_service/reserved_routes/${encodeURIComponent(reservedRouteId)}`,
+    path: `/uas/api/airmobility/v3/delete-object`,
     authInfo,
+    payload: { objectId: id },
     abortSignal,
   });
 };
@@ -326,7 +385,8 @@ export const createReservedRoute = async ({
   const resp = await fetchRawJson<successResponse | ErrorResponse>({
     method: 'POST',
     baseUrl,
-    path: '/uas/api/airmobility/v3/put-reserve-area',
+    // path: '/uas/api/airmobility/v3/put-reserve-area',
+    path: '/uas/api/airmobility/v3/put-object',
     authInfo,
     payload,
     abortSignal,

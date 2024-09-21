@@ -50,13 +50,35 @@ export interface EmergencyAreaVoxels {
   vacant: boolean;
 }
 
+export interface reservationTime {
+  period: {
+    startTime: string;
+    endTime: string;
+  };
+  occupation: string;
+  reserverId: string;
+}
+
+export interface reservedAreaDefinition {
+  ownerId: string;
+  reservationTime: reservationTime;
+  voxelValues: reserveAreaVoxels[];
+}
+
+export interface reserveAreaVoxels {
+  id: {
+    ID: 'string';
+  };
+  reservationTime: reservationTime;
+}
+
 export interface SpatialDefinition {
   objectId?: string;
   terrain?: terrainBuildingDefinition;
   building?: terrainBuildingDefinition;
   restrictedArea?: restrictedAreaDefinition;
   emergencyArea?: emergencyAreaDefinition;
-  reserveArea?: any;
+  reserveArea?: reservedAreaDefinition;
   channel?: any;
   overlayArea?: any;
   weather?: any;

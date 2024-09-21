@@ -1,7 +1,7 @@
-import { Cesium3DTileStyle, Viewer as CesiumViewer } from 'cesium';
+import { Cesium3DTileStyle, Color, Viewer as CesiumViewer } from 'cesium';
 import { memo, ReactNode, useEffect, useRef } from 'react';
 import { useLatest, useMount, useShallowCompareEffect } from 'react-use';
-import { CesiumComponentRef } from 'resium';
+import { CesiumComponentRef, Entity, PointGraphics, PolylineGraphics } from 'resium';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
@@ -56,6 +56,7 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
   const selectedCtrls = useSelected3DTileFeature(viewerRef);
   const [selectedModelId, unselectModel] = selectedCtrls;
   const viewerCtrls = useViewerCtrls(viewerRef);
+  console.log('selectedCtrls', selectedCtrls);
 
   useMount(() => {
     update((s) => (s.viewerCtrls = viewerCtrls));
@@ -103,6 +104,62 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
     }
   }, [models]);
 
+  if (props.requestType === 'RESERVE_AREA') {
+    return (
+      <ViewerContainer>
+        <Viewer ref={viewerRef}>
+          {/* {[...models.entries()].map(([modelId, model]) => (
+            <CuboidCollectionModel key={modelId} data={model} style={props.tilesetStyle} />
+          ))} */}
+
+          {[...models.entries()].map(([modelId, model]) =>
+            Array.from({ length: model.cuboids.length - 1 }).map((_, i) => {
+              const p1 = model.cuboids[i];
+              const p2 = model.cuboids[i + 1];
+
+              return (
+                <Entity
+                  id={`${modelId}-${p1.metadata.spatialId}`}
+                  key={`${modelId}-${p1.metadata.spatialId}`}
+                >
+                  <PolylineGraphics
+                    width={4}
+                    material={(() => {
+                      return Color.YELLOW;
+                    })()}
+                    positions={[p1.location, p2.location]}
+                  />
+                </Entity>
+              );
+            })
+          )}
+          {[...models.entries()].map(([modelId, model]) =>
+            model.cuboids.map((p) => (
+              <Entity
+                key={`l-${modelId}-${p.metadata.spatialId}`}
+                id={`l-${modelId}-${p.metadata.spatialId}`}
+                position={p.location}
+                onClick={() => {
+                  update((s) => (s.selectedCtrls[0] = modelId));
+                }}
+              >
+                <PointGraphics pixelSize={16} color={Color.YELLOW} />
+              </Entity>
+            ))
+          )}
+        </Viewer>
+        <Navigation>
+          {page === Pages.SelectFunction && <SelectFunctionFragment />}
+          {page === Pages.ShowModel && <ShowModelFragment />}
+          {page === Pages.ShowModels && (
+            <ShowModelsFragment requestType={props.requestType}>
+              {props.children}
+            </ShowModelsFragment>
+          )}
+        </Navigation>
+      </ViewerContainer>
+    );
+  }
   return (
     <ViewerContainer>
       <Viewer ref={viewerRef}>

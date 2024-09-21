@@ -205,6 +205,7 @@ export const ShowModelsFragment = memo(({ requestType, children }: ShowModelsFra
     setLoading(true);
     try {
       await deleteModel(selectedModelId);
+      update((s) => (s.selectedCtrls[0] = null));
     } catch (e) {
       console.error(e);
       warnIfTokenExpired(e);
