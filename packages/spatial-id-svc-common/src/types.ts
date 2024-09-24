@@ -28,6 +28,7 @@ export enum RequestTypes {
   MICROWAVE = 'MICROWAVE',
   GROUND_RISK = 'GROUND_RISK',
   AIR_RISK = 'AIR_RISK',
+  AIR_SPACE = 'AIR_SPACE',
 }
 
 export enum RestrictionTypes {

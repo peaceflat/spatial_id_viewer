@@ -11,6 +11,7 @@ import {
   deleteReservedRoute,
   getReservedRoute,
   getReservedRoutes,
+  GetReservedRoutesRequestV3,
   GetReservedRoutesResponse,
   Route,
 } from 'spatial-id-svc-route';
@@ -234,7 +235,7 @@ const useLoadModels = () => {
       getReservedRoutes({
         baseUrl: apiBaseUrl,
         authInfo: authInfo.current,
-        payload: displayDetails,
+        payload: displayDetails as GetReservedRoutesRequestV3,
       }),
       'reserveArea'
     );

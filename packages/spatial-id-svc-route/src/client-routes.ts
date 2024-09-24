@@ -118,6 +118,15 @@ export interface GetReservedRoutesRequestV3 {
   requestType: string[];
 }
 
+export interface getPermittedAirSpaceRequest {
+  figure: SpatialFigure;
+  period: {
+    startTime: Date;
+    endTime: Date;
+  };
+  includeReserveArea: boolean;
+}
+
 export interface GetReservedRoutesResponse {
   responseHeader: CommonResponseHeader;
   reservedRouteId: string;
@@ -157,6 +166,34 @@ export interface GetReservedRouteResponseV3 {
   error: ErrorResponse;
 }
 
+export interface GetPermittedRoutesResponse {
+  responseHeader?: CommonResponseHeader;
+  outOfSpace: {
+    ID: string[];
+  };
+  flyableSpace: {
+    ID: string[];
+  };
+  error: string;
+}
+
+export interface GetPermittedRoutesResponseStream {
+  responseHeader?: CommonResponseHeader;
+  result: {
+    outOfSpace: {
+      ID: string[];
+    };
+    flyableSpace: {
+      ID: string[];
+    };
+    occupiedSpace: {
+      ID: string[];
+    };
+    error: string;
+  };
+  error: ErrorResponse;
+}
+
 export interface GetReservedRoutesParams {
   baseUrl: string;
   authInfo: AuthInfo;
@@ -168,6 +205,13 @@ export interface GetReservedRoutesParamsV3 {
   baseUrl: string;
   authInfo: AuthInfo;
   payload: GetReservedRoutesRequestV3;
+  abortSignal?: AbortSignal;
+}
+
+export interface GetPermittedRoutesParams {
+  baseUrl: string;
+  authInfo: AuthInfo;
+  payload: getPermittedAirSpaceRequest;
   abortSignal?: AbortSignal;
 }
 /** 空間 ID の範囲内の予約ルートを複数取得する */
@@ -245,6 +289,42 @@ export const getReservedRoute = async ({
     payload: { objectId: id },
     abortSignal,
   });
+};
+
+export const getPermittedAirSpace = async function* ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: GetPermittedRoutesParams) {
+  for await (const chunk of fetchJsonStream<GetPermittedRoutesResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/select-airspace-arrangement',
+    authInfo,
+    payload,
+    abortSignal,
+  })) {
+    yield chunk;
+  }
+};
+
+export const getPermittedAirSpaceStream = async function* ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: GetPermittedRoutesParams) {
+  for await (const chunk of fetchJsonStream<GetPermittedRoutesResponseStream>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/select-airspace-arrangement-stream',
+    authInfo,
+    payload,
+    abortSignal,
+  })) {
+    yield chunk;
+  }
 };
 
 export interface DeleteReservedRouteParams {

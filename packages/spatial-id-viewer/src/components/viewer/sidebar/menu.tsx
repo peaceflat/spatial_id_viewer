@@ -84,9 +84,9 @@ export const Menu = () => {
       </MenuCategory>
 
       <MenuCategory>
-        <MenuTitle>機体割付ルート</MenuTitle>
+        <MenuTitle>飛行許可空域</MenuTitle>
         <MenuEntry>
-          <Link href="/aircraft-routes">表示</Link>
+          <Link href="/permitted-airspace">表示</Link>
         </MenuEntry>
       </MenuCategory>
 
