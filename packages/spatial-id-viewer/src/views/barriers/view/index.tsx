@@ -6,7 +6,12 @@ import { useStore } from 'zustand';
 
 import { CuboidCollection } from 'spatial-id-converter';
 import { RequestTypes } from 'spatial-id-svc-common';
-import { deleteBarrier, getBarrier, getBarriers } from 'spatial-id-svc-route';
+import {
+  deleteBarrier,
+  getBarrier,
+  getBarriers,
+  GetTerrainBarriersRequest,
+} from 'spatial-id-svc-route';
 
 import { AreaViewer, createUseModels } from '#app/components/area-viewer';
 import { DisplayDetails } from '#app/components/area-viewer/interface';
@@ -58,7 +63,7 @@ const useLoadModels = () => {
       getBarriers({
         baseUrl: apiBaseUrl,
         authInfo: authInfo.current,
-        payload: displayDetails,
+        payload: displayDetails as GetTerrainBarriersRequest,
         // payload: {
         //   boundary: {
         //     ID: bbox.toString(),

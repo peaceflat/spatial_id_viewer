@@ -299,7 +299,7 @@ const ReservedRoutesViewer = () => {
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.RESERVE_AREA}
       >
-        <AdditionalSettings />
+        {/* <AdditionalSettings /> */}
       </AreaViewer>
     </>
   );
