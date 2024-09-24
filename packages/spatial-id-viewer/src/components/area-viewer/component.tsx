@@ -49,7 +49,6 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
   const flyableModels = useStore(store, (s) => s.flyableSpaceModels);
   const occupiedModels = useStore(store, (s) => s.occupiedSpaceModels);
   const outOfSpaceModels = useStore(store, (s) => s.outOfSpaceModels);
-  console.log(outOfSpaceModels);
   const modelStore = useStore(
     store,
     (s) => ({
