@@ -96,6 +96,16 @@ export const Menu = () => {
           <Link href="/routes/create">設計</Link>
         </MenuEntry>
       </MenuCategory>
+
+      <MenuCategory>
+        <MenuTitle>Weather</MenuTitle>
+        <MenuEntry>
+          <Link href="/weather">表示・削除</Link>
+        </MenuEntry>
+        <MenuEntry>
+          <Link href="/weather/create">設計</Link>
+        </MenuEntry>
+      </MenuCategory>
     </>
   );
 };
