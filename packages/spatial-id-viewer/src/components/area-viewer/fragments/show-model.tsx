@@ -1,6 +1,6 @@
 import { Cartesian3, Rectangle } from 'cesium';
 import { Button, TextInput } from 'flowbite-react';
-import { memo, useState } from 'react';
+import { memo, ReactNode, useState } from 'react';
 import { useUpdateEffect } from 'react-use';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
@@ -21,8 +21,12 @@ const States = {
 } as const;
 type States = (typeof States)[keyof typeof States];
 
+export interface ShowModelFragmentProps {
+  children?: ReactNode;
+}
+
 /** 単数取得系 API を呼び、モデルを 1 つ表示させる画面 */
-export const ShowModelFragment = memo(() => {
+export const ShowModelFragment = memo(({ children }: ShowModelFragmentProps) => {
   const store = useStoreApi();
   const featureName = useStore(store, (s) => s.featureName);
   const featureIdName = useStore(store, (s) => s.featureIdName);
@@ -142,6 +146,7 @@ export const ShowModelFragment = memo(() => {
           <p>
             {featureName} {id} を表示しています
           </p>
+          {children}
           <NavigationButtons>
             <Button color="dark" onClick={onBackButtonClick} disabled={loading}>
               戻る
