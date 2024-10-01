@@ -1,7 +1,7 @@
 import { Cesium3DTileStyle } from 'cesium';
 import { castDraft, Draft } from 'immer';
 import Head from 'next/head';
-import { useCallback } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useLatest } from 'react-use';
 import { useStore } from 'zustand';
 
@@ -142,17 +142,22 @@ const useLoadModels = (stream = false) => {
 };
 
 const AircraftRoutesViewer = () => {
-  // const loadModel = useLoadModel();
+  const [tilesetStyle, setTilesetStyle] = useState<Cesium3DTileStyle>();
+  const [tileOpacity, setTileOpacity] = useState(0.6);
+
+  const onTileOpacityChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    setTileOpacity(ev.target.valueAsNumber);
+  };
+  useEffect(() => {
+    setTilesetStyle(tilesetStyleFn(tileOpacity));
+  }, [tileOpacity]);
+
   const loadAirSpaceModels = useLoadModels();
   const loadAirSpaceModelsStream = useLoadModels(true);
   const useModels = createUseAirspaceModels({
     loadAirSpaceModels,
     loadAirSpaceModelsStream,
   });
-
-  const store = useStoreApi();
-  const airSpaceType = useLatest(useStore(store, (s) => s.airSpaceType));
-  console.log('air craft', airSpaceType);
 
   return (
     <>
@@ -165,15 +170,26 @@ const AircraftRoutesViewer = () => {
         useModels={useModels}
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.AIR_SPACE}
+        opacity={tileOpacity}
       >
+        <input
+          type="range"
+          className="h-1 accent-yellow-500"
+          value={tileOpacity}
+          onChange={onTileOpacityChange}
+          min={0}
+          max={1}
+          step={0.01}
+        />
         <AdditionalDateSettings />
       </AreaViewer>
     </>
   );
 };
 
-const tilesetStyle = new Cesium3DTileStyle({
-  color: 'rgba(0, 255, 255, 0.6)',
-});
+const tilesetStyleFn = (tileOpacity: number) =>
+  new Cesium3DTileStyle({
+    color: `hsla(0.5, 1, 0.5, ${tileOpacity})`,
+  });
 
 export default WithAuthGuard(WithStore(AircraftRoutesViewer));

@@ -34,7 +34,6 @@ const WeatherForecastViewer = (props: Props) => {
 
   useEffect(() => {
     setTilesetStyle(tilesetStyleFn(tileOpacity, type));
-    console.log(tilesetStyleFn(tileOpacity, type));
   }, [tileOpacity, type]);
 
   const useModels = createUseModels({
@@ -55,9 +54,9 @@ const WeatherForecastViewer = (props: Props) => {
         requestType={RequestTypes.WEATHER_FORECAST}
         reference={props.reference}
       >
-        <RangeSlider
-          className="dark"
-          sizing="sm"
+        <input
+          type="range"
+          className="h-1 accent-yellow-500"
           value={tileOpacity}
           onChange={onTileOpacityChange}
           min={0}
