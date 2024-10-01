@@ -8,6 +8,7 @@ export interface DisplayDetails {
     endTime: Date;
   };
   includeReserveArea?: boolean;
+  zoomLevel?: number;
 }
 
 /** モデルを操作する際に使用する関数・変数群 */
@@ -24,6 +25,8 @@ export interface ModelControllers {
 
   loadAirSpaceModels?: (displayDetails: DisplayDetails) => Promise<void>;
   loadAirSpaceModelsStream?: (displayDetails: DisplayDetails) => Promise<void>;
+
+  loadModelsRisk?: (displayDetails: DisplayDetails) => Promise<void>;
 
   error?: unknown;
 }

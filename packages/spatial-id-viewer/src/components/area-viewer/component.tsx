@@ -34,6 +34,7 @@ export interface AreaViewerProps<Metadata extends Record<string, unknown> = Reco
   /** モデルに適用するスタイル */
   tilesetStyle: Cesium3DTileStyle;
   requestType: string;
+  opacity?: number;
   children?: ReactNode;
 }
 
@@ -140,7 +141,7 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
               data={model}
               style={
                 new Cesium3DTileStyle({
-                  color: 'rgba(0, 255, 255, 0.6)',
+                  color: `rgba(0, 255, 255, ${props.opacity ?? 0.6})`,
                 })
               }
             />
@@ -151,7 +152,7 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
               data={model}
               style={
                 new Cesium3DTileStyle({
-                  color: 'rgba(210, 43, 43, 0.6)',
+                  color: `rgba(210, 43, 43, ${props.opacity ?? 0.6})`,
                 })
               }
             />
@@ -162,7 +163,7 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
               data={model}
               style={
                 new Cesium3DTileStyle({
-                  color: 'rgba(255, 191, 0, 0.8)',
+                  color: `rgba(255, 191, 0, ${props.opacity ?? 0.6})`,
                 })
               }
             />
@@ -189,9 +190,9 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
     return (
       <ViewerContainer>
         <Viewer ref={viewerRef}>
-          {/* {[...models.entries()].map(([modelId, model]) => (
+          {[...models.entries()].map(([modelId, model]) => (
             <CuboidCollectionModel key={modelId} data={model} style={props.tilesetStyle} />
-          ))} */}
+          ))}
 
           {[...models.entries()].map(([modelId, model]) =>
             Array.from({ length: model.cuboids.length - 1 }).map((_, i) => {
@@ -231,7 +232,7 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
         </Viewer>
         <Navigation>
           {page === Pages.SelectFunction && <SelectFunctionFragment />}
-          {page === Pages.ShowModel && <ShowModelFragment />}
+          {page === Pages.ShowModel && <ShowModelFragment>{props.children}</ShowModelFragment>}
           {page === Pages.ShowModels && (
             <ShowModelsFragment requestType={props.requestType}>
               {props.children}
@@ -250,7 +251,7 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
       </Viewer>
       <Navigation>
         {page === Pages.SelectFunction && <SelectFunctionFragment />}
-        {page === Pages.ShowModel && <ShowModelFragment />}
+        {page === Pages.ShowModel && <ShowModelFragment>{props.children}</ShowModelFragment>}
         {page === Pages.ShowModels && (
           <ShowModelsFragment requestType={props.requestType}>{props.children}</ShowModelsFragment>
         )}

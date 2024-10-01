@@ -143,6 +143,7 @@ export const ShowModelsFragment = memo(
     const loadModels = useStore(store, (s) => s.modelCtrls.loadModels);
     const loadAirSpaceModels = useStore(store, (s) => s.modelCtrls.loadAirSpaceModels);
     const loadAirSpaceModelsStream = useStore(store, (s) => s.modelCtrls.loadAirSpaceModelsStream);
+    const loadModelsRisk = useStore(store, (s) => s.modelCtrls.loadModelsRisk);
     const deleteModel = useStore(store, (s) => s.modelCtrls.deleteModel);
     const hasDeleteModel = !!deleteModel;
     const resetAllModels = useStore(store, (s) => s.resetAllModels);
@@ -152,6 +153,9 @@ export const ShowModelsFragment = memo(
     const [isTileFAuto, setIsTileFAuto] = useState(true);
     const [tileF, setTileF] = useState(0);
     const vbox = useViewingBoxTile();
+
+    const [tileF1, setTileF1] = useState<number>(0);
+    const [tileF2, setTileF2] = useState<number>(0);
 
     useEffect(() => {
       if (isTileFAuto && vbox) {
@@ -178,18 +182,22 @@ export const ShowModelsFragment = memo(
         figure.identification.ID.f = tileF;
       }
 
+      figure.tube.start.altitude = tileF1;
+      figure.tube.end.altitude = tileF2;
+
       const displayDetails: any = {
         figure: figure,
       };
 
-      if (requestType !== RequestTypes.AIR_SPACE) {
-        displayDetails['requestType'] = [requestType];
-      }
       if (requestType === RequestTypes.AIR_SPACE) {
         displayDetails['period'] = {
           startTime: `${startTime}`,
           endTime: `${endTime}`,
         };
+      } else if (requestType === RequestTypes.RISK_LEVEL) {
+        displayDetails['zoomLevel'] = tileF;
+      } else {
+        displayDetails['requestType'] = [requestType];
       }
 
       setLoading(true);
@@ -198,6 +206,8 @@ export const ShowModelsFragment = memo(
           await loadAirSpaceModels(displayDetails);
         } else if (requestType === RequestTypes.AIR_SPACE && stream) {
           await loadAirSpaceModelsStream(displayDetails);
+        } else if (requestType === RequestTypes.RISK_LEVEL) {
+          await loadModelsRisk(displayDetails);
         } else {
           await loadModels(displayDetails);
         }
@@ -225,6 +235,14 @@ export const ShowModelsFragment = memo(
 
     const onTileFChange = (ev: ChangeEvent<HTMLInputElement>) => {
       setTileF(replaceNaN(ev.target.valueAsNumber, 0));
+    };
+
+    const onTileF1Change = (ev: ChangeEvent<HTMLInputElement>) => {
+      setTileF1(replaceNaN(ev.target.valueAsNumber, 0));
+    };
+
+    const onTileF2Change = (ev: ChangeEvent<HTMLInputElement>) => {
+      setTileF2(replaceNaN(ev.target.valueAsNumber, 0));
     };
 
     const onDeleteButtonClick = async () => {
@@ -280,6 +298,26 @@ export const ShowModelsFragment = memo(
               </Button>
             </NavigationButtons>
             {children}
+            <div>
+              <p>開始高度と終了高度を入力してください</p>
+              <TextInput
+                type="number"
+                required={true}
+                value={tileF1}
+                onChange={onTileF1Change}
+                min={0}
+                max={24}
+              />
+              <TextInput
+                className="mt-2"
+                type="number"
+                required={true}
+                value={tileF2}
+                onChange={onTileF2Change}
+                min={0}
+                max={24}
+              />
+            </div>
             <div>
               高度 (f):
               <Checkbox

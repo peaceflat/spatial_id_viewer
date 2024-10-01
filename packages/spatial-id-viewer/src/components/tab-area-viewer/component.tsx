@@ -18,7 +18,7 @@ import {
   useStoreApi,
   WithStore,
 } from '#app/components/area-viewer/store';
-import { Navigation } from '#app/components/navigation';
+import { Navigation, NavigationWR } from '#app/components/navigation';
 import { CuboidCollectionModel } from '#app/components/viewer/cuboid-collection-model';
 
 export interface AreaViewerProps<Metadata extends Record<string, unknown> = Record<string, never>> {
@@ -132,13 +132,13 @@ const TabAreaViewerLayout = <Metadata extends Record<string, unknown> = Record<s
       {[...models.entries()].map(([modelId, model]) => (
         <CuboidCollectionModel key={modelId} data={model} style={props.tilesetStyle} />
       ))}
-      <Navigation>
+      <NavigationWR>
         {page === Pages.SelectFunction && <SelectFunctionFragment />}
         {page === Pages.ShowModel && <ShowModelFragment>{props.children}</ShowModelFragment>}
         {page === Pages.ShowModels && (
           <ShowModelsFragment requestType={props.requestType}>{props.children}</ShowModelsFragment>
         )}
-      </Navigation>
+      </NavigationWR>
     </>
   );
 };

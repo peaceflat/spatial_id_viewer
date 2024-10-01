@@ -29,6 +29,7 @@ export enum RequestTypes {
   GROUND_RISK = 'GROUND_RISK',
   AIR_RISK = 'AIR_RISK',
   AIR_SPACE = 'AIR_SPACE',
+  RISK_LEVEL = 'RISK_LEVEL',
 }
 
 export enum RestrictionTypes {
