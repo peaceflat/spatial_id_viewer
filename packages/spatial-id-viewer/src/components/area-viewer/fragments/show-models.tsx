@@ -15,6 +15,7 @@ import { useInterval, useUpdateEffect } from 'react-use';
 import { useStore } from 'zustand';
 
 import { Figure, getGeoidHeight, SpatialId } from 'spatial-id-converter';
+import { RequestTypes } from 'spatial-id-svc-common';
 
 import { Pages, useStoreApi } from '#app/components/area-viewer/store';
 import { NavigationButtons } from '#app/components/navigation';
@@ -117,6 +118,7 @@ export const useViewingBoxTile = () => {
 
 export interface ShowModelsFragmentProps {
   requestType?: string;
+  stream?: boolean;
   children?: ReactNode;
 }
 
@@ -127,160 +129,186 @@ const States = {
 type States = (typeof States)[keyof typeof States];
 
 /** 複数取得系 API を呼び、モデルを 1 つ表示させる画面 */
-export const ShowModelsFragment = memo(({ requestType, children }: ShowModelsFragmentProps) => {
-  const store = useStoreApi();
-  const featureName = useStore(store, (s) => s.featureName);
-  const isFunctionSelectable = useStore(store, (s) => s.isFunctionSelectable());
-  const selectedModelId = useStore(store, (s) => s.selectedCtrls[0]);
-  const update = useStore(store, (s) => s.update);
-  const errorOutsidePromise = useStore(store, (s) => s.modelCtrls.error);
-  const loadModels = useStore(store, (s) => s.modelCtrls.loadModels);
-  const deleteModel = useStore(store, (s) => s.modelCtrls.deleteModel);
-  const hasDeleteModel = !!deleteModel;
+export const ShowModelsFragment = memo(
+  ({ requestType, stream, children }: ShowModelsFragmentProps) => {
+    const store = useStoreApi();
+    const startTime = useStore(store, (s) => s.startTime);
+    const endTime = useStore(store, (s) => s.endTime);
+    const featureName = useStore(store, (s) => s.featureName);
+    const isFunctionSelectable = useStore(store, (s) => s.isFunctionSelectable());
+    const isAirSpaceSelectable = useStore(store, (s) => s.isAirSpaceSelectable());
+    const selectedModelId = useStore(store, (s) => s.selectedCtrls[0]);
+    const update = useStore(store, (s) => s.update);
+    const errorOutsidePromise = useStore(store, (s) => s.modelCtrls.error);
+    const loadModels = useStore(store, (s) => s.modelCtrls.loadModels);
+    const loadAirSpaceModels = useStore(store, (s) => s.modelCtrls.loadAirSpaceModels);
+    const loadAirSpaceModelsStream = useStore(store, (s) => s.modelCtrls.loadAirSpaceModelsStream);
+    const deleteModel = useStore(store, (s) => s.modelCtrls.deleteModel);
+    const hasDeleteModel = !!deleteModel;
+    const resetAllModels = useStore(store, (s) => s.resetAllModels);
 
-  const [state, setState] = useState<States>(States.Default);
-  const [loading, setLoading] = useState(false);
-  const [isTileFAuto, setIsTileFAuto] = useState(true);
-  const [tileF, setTileF] = useState(0);
-  const vbox = useViewingBoxTile();
+    const [state, setState] = useState<States>(States.Default);
+    const [loading, setLoading] = useState(false);
+    const [isTileFAuto, setIsTileFAuto] = useState(true);
+    const [tileF, setTileF] = useState(0);
+    const vbox = useViewingBoxTile();
 
-  useEffect(() => {
-    if (isTileFAuto && vbox) {
-      setTileF(vbox.identification.ID.f);
-    }
-  }, [isTileFAuto, vbox]);
+    useEffect(() => {
+      if (isTileFAuto && vbox) {
+        setTileF(vbox.identification.ID.f);
+      }
+    }, [isTileFAuto, vbox]);
 
-  // Promise 外でエラー発生の場合のエラーハンドリング
-  useUpdateEffect(() => {
-    // null or undefined
-    if (errorOutsidePromise == null) {
-      return;
-    }
+    // Promise 外でエラー発生の場合のエラーハンドリング
+    useUpdateEffect(() => {
+      // null or undefined
+      if (errorOutsidePromise == null) {
+        return;
+      }
 
-    console.error(errorOutsidePromise);
-    warnIfTokenExpired(errorOutsidePromise);
-    setState(States.Errored);
-  }, [errorOutsidePromise]);
+      console.error(errorOutsidePromise);
+      warnIfTokenExpired(errorOutsidePromise);
+      setState(States.Errored);
+    }, [errorOutsidePromise]);
 
-  const onLoadModelsClick = async () => {
-    const figure = JSON.parse(JSON.stringify(vbox));
-    if (!isTileFAuto) {
-      figure.identification.ID.f = tileF;
-    }
+    const onLoadModelsClick = async () => {
+      resetAllModels();
+      const figure = JSON.parse(JSON.stringify(vbox));
+      if (!isTileFAuto) {
+        figure.identification.ID.f = tileF;
+      }
 
-    const displayDetails = {
-      figure: figure,
-      requestType: [requestType],
+      const displayDetails: any = {
+        figure: figure,
+      };
+
+      if (requestType !== RequestTypes.AIR_SPACE) {
+        displayDetails['requestType'] = [requestType];
+      }
+      if (requestType === RequestTypes.AIR_SPACE) {
+        displayDetails['period'] = {
+          startTime: `${startTime}`,
+          endTime: `${endTime}`,
+        };
+      }
+
+      setLoading(true);
+      try {
+        if (requestType === RequestTypes.AIR_SPACE && !stream) {
+          await loadAirSpaceModels(displayDetails);
+        } else if (requestType === RequestTypes.AIR_SPACE && stream) {
+          await loadAirSpaceModelsStream(displayDetails);
+        } else {
+          await loadModels(displayDetails);
+        }
+      } catch (e) {
+        console.error(e);
+        warnIfTokenExpired(e);
+        setState(States.Errored);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setLoading(true);
-    try {
-      await loadModels(displayDetails);
-    } catch (e) {
-      console.error(e);
-      warnIfTokenExpired(e);
-      setState(States.Errored);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const onCancelButtonClick = () => {
+      update((d) => (d.page = Pages.SelectFunction));
+      update((d) => (d.pageAirSpace = Pages.SelectFunction));
+    };
 
-  const onCancelButtonClick = () => {
-    update((d) => (d.page = Pages.SelectFunction));
-  };
+    const onBackButtonClick = () => {
+      setState(States.Default);
+    };
 
-  const onBackButtonClick = () => {
-    setState(States.Default);
-  };
+    const onIsTileFAutoChange = (ev: ChangeEvent<HTMLInputElement>) => {
+      setIsTileFAuto(ev.target.checked);
+    };
 
-  const onIsTileFAutoChange = (ev: ChangeEvent<HTMLInputElement>) => {
-    setIsTileFAuto(ev.target.checked);
-  };
+    const onTileFChange = (ev: ChangeEvent<HTMLInputElement>) => {
+      setTileF(replaceNaN(ev.target.valueAsNumber, 0));
+    };
 
-  const onTileFChange = (ev: ChangeEvent<HTMLInputElement>) => {
-    setTileF(replaceNaN(ev.target.valueAsNumber, 0));
-  };
+    const onDeleteButtonClick = async () => {
+      setLoading(true);
+      try {
+        await deleteModel(selectedModelId);
+        update((s) => (s.selectedCtrls[0] = null));
+      } catch (e) {
+        console.error(e);
+        warnIfTokenExpired(e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const onDeleteButtonClick = async () => {
-    setLoading(true);
-    try {
-      await deleteModel(selectedModelId);
-    } catch (e) {
-      console.error(e);
-      warnIfTokenExpired(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const automaticId = useId();
 
-  const automaticId = useId();
-
-  return (
-    <>
-      {state === States.Errored ? (
-        <>
-          <p>エラーが発生しました。</p>
-          <NavigationButtons>
-            <Button color="dark" onClick={onBackButtonClick}>
-              戻る
-            </Button>
-          </NavigationButtons>
-        </>
-      ) : selectedModelId !== null ? (
-        <>
-          <p>
-            {featureName} {selectedModelId} が選択されています
-          </p>
-          {hasDeleteModel && (
+    return (
+      <>
+        {state === States.Errored ? (
+          <>
+            <p>エラーが発生しました。</p>
             <NavigationButtons>
-              <Button color="warning" onClick={onDeleteButtonClick} disabled={loading}>
-                削除
-              </Button>
-            </NavigationButtons>
-          )}
-        </>
-      ) : (
-        <>
-          <p>描画範囲の{featureName}を表示</p>
-          <NavigationButtons>
-            {isFunctionSelectable && (
-              <Button color="dark" onClick={onCancelButtonClick} disabled={loading}>
+              <Button color="dark" onClick={onBackButtonClick}>
                 戻る
               </Button>
+            </NavigationButtons>
+          </>
+        ) : selectedModelId !== null && requestType !== RequestTypes.AIR_SPACE ? (
+          <>
+            <p>
+              {featureName} {selectedModelId} が選択されています
+            </p>
+            {hasDeleteModel && (
+              <NavigationButtons>
+                <Button color="warning" onClick={onDeleteButtonClick} disabled={loading}>
+                  削除
+                </Button>
+              </NavigationButtons>
             )}
-            <Button color="dark" onClick={onLoadModelsClick} disabled={!vbox || loading}>
-              読み込み
-            </Button>
-          </NavigationButtons>
-          {children}
-          <div>
-            高度 (f):
-            <Checkbox
-              className="ml-2"
-              id={automaticId}
-              checked={isTileFAuto}
-              onChange={onIsTileFAutoChange}
-            />
-            <label className="ml-2" htmlFor={automaticId}>
-              自動 (地表面付近)
-            </label>
-            {!isTileFAuto && (
-              <TextInput type="number" min={0} value={tileF} onChange={onTileFChange} />
-            )}
-          </div>
-          <p>
-            取得範囲 (z/f/x/y):{' '}
-            {vbox ? (
-              <>
-                {vbox.identification.ID.z}/{tileF}/{vbox.identification.ID.x}/
-                {vbox.identification.ID.y}
-              </>
-            ) : (
-              'Loading...'
-            )}
-          </p>
-        </>
-      )}
-    </>
-  );
-});
+          </>
+        ) : (
+          <>
+            <p>描画範囲の{featureName}を表示</p>
+            <NavigationButtons>
+              {(isFunctionSelectable || isAirSpaceSelectable) && (
+                <Button color="dark" onClick={onCancelButtonClick} disabled={loading}>
+                  戻る
+                </Button>
+              )}
+              <Button color="dark" onClick={onLoadModelsClick} disabled={!vbox || loading}>
+                読み込み
+              </Button>
+            </NavigationButtons>
+            {children}
+            <div>
+              高度 (f):
+              <Checkbox
+                className="ml-2"
+                id={automaticId}
+                checked={isTileFAuto}
+                onChange={onIsTileFAutoChange}
+              />
+              <label className="ml-2" htmlFor={automaticId}>
+                自動 (地表面付近)
+              </label>
+              {!isTileFAuto && (
+                <TextInput type="number" min={0} value={tileF} onChange={onTileFChange} />
+              )}
+            </div>
+            <p>
+              取得範囲 (z/f/x/y):{' '}
+              {vbox ? (
+                <>
+                  {vbox.identification.ID.z}/{tileF}/{vbox.identification.ID.x}/
+                  {vbox.identification.ID.y}
+                </>
+              ) : (
+                'Loading...'
+              )}
+            </p>
+          </>
+        )}
+      </>
+    );
+  }
+);

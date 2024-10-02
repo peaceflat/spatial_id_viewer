@@ -28,6 +28,8 @@ export interface StreamError {
 export interface StreamResponse<T> {
   result?: T;
   error?: StreamError;
+  outOfSpace?: T;
+  flyableSpace?: T;
 }
 
 /** ストリーム API のステータス */

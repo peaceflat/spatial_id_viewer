@@ -10,6 +10,7 @@ import { CuboidCollection, SpatialId } from 'spatial-id-converter';
 import {
   BlockedArea,
   deleteBlockedArea,
+  GetAreaRequest,
   getBlockedArea,
   GetBlockedAreas,
   getBlockedAreas,
@@ -140,7 +141,7 @@ const useLoadModels = () => {
       getBlockedAreas({
         baseUrl: apiBaseUrl,
         authInfo: authInfo.current,
-        payload: displayDetails,
+        payload: displayDetails as GetAreaRequest,
       }),
       'restrictedArea'
     );
@@ -283,7 +284,7 @@ const BlockedAreasViewer = () => {
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.RESTRICTED_AREA}
       >
-        <AdditionalSettings />
+        {/* <AdditionalSettings /> */}
       </AreaViewer>
     </>
   );

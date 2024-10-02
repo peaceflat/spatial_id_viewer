@@ -33,6 +33,11 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.0.2",
-    "webpack": "5.76.2"
+    "webpack": "5.76.2",
+    "dompurify": "^2.5.4",
+    "semver": "^7.6.3",
+    "braces": "^3.0.3",
+    "fast-loops": "^1.1.4",
+    "protobufjs": "^7.4.0"
   }
 }

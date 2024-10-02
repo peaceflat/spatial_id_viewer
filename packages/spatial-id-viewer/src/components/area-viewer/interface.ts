@@ -2,7 +2,12 @@ import { Figure, SpatialId } from 'spatial-id-converter';
 
 export interface DisplayDetails {
   figure: Figure;
-  requestType: string[];
+  requestType?: string[];
+  period?: {
+    startTime: Date;
+    endTime: Date;
+  };
+  includeReserveArea?: boolean;
 }
 
 /** モデルを操作する際に使用する関数・変数群 */
@@ -16,5 +21,9 @@ export interface ModelControllers {
   /** 読み込まれているモデルをアンロードする */
   unloadModels: () => Promise<void>;
   /** Promise 外で発生したエラー */
+
+  loadAirSpaceModels?: (displayDetails: DisplayDetails) => Promise<void>;
+  loadAirSpaceModelsStream?: (displayDetails: DisplayDetails) => Promise<void>;
+
   error?: unknown;
 }

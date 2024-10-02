@@ -108,7 +108,7 @@ export const fetchRawJsonStream = async function* <T>(params: FetchJsonParams) {
       throw new ApiResponseError('failed to parse as json');
     }
 
-    if (parsed.error?.code !== 0) {
+    if (parsed.error?.code && parsed.error.code !== 0) {
       throw new ApiStreamError('response has an error', parsed.error);
     }
     yield parsed;
@@ -152,7 +152,7 @@ export const fetchJsonStream = async function* <
   for await (const chunk of fetchRawJsonStream<T>(params)) {
     let status: number;
     try {
-      status = chunk.result.responseHeader?.status;
+      status = chunk.result?.responseHeader?.status;
     } catch (e) {
       throw new ApiResponseError('failed to get chunk.result.responseHeader.status');
     }
