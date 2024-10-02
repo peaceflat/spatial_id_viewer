@@ -8,7 +8,6 @@ import { RestrictionTypeFragmentProps } from '#app/components/area-creator';
 import { NavigationButtons } from '#app/components/navigation';
 import { RestrictionAdditionalInfo } from '#app/views/blocked-areas/create/interfaces';
 
-/** 単一のエリアに関する追加の情報の入力欄 */
 export const RestrictiontypeFragment = memo(
   ({
     restrictionInfo,

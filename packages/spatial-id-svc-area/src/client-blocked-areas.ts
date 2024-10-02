@@ -18,17 +18,28 @@ export interface RestrictedAreaVoxels {
     ID: 'string';
   };
 }
+export interface EmergencyAreaVoxels {
+  id: {
+    ID: 'string';
+  };
+  vacant: boolean;
+}
 export interface restrictedAreaDefinition {
   reference: string;
   type: string;
   voxelValues: RestrictedAreaVoxels[];
+}
+
+export interface emergencyAreaDefinition {
+  reference: string;
+  voxelValues: EmergencyAreaVoxels[];
 }
 export interface SpatialDefinition {
   objectId?: string;
   terrain?: any;
   building?: any;
   restrictedArea?: restrictedAreaDefinition;
-  emergencyArea?: any;
+  emergencyArea?: emergencyAreaDefinition;
   reserveArea?: any;
   channel?: any;
   overlayArea?: any;
@@ -95,7 +106,7 @@ export interface SpatialFigure {
   polygon: any;
 }
 
-export interface GetRestrictedAreaRequest {
+export interface GetAreaRequest {
   figure: SpatialFigure;
   requestType: string[];
 }
@@ -148,7 +159,7 @@ export interface GetBlockedAreasParams {
   baseUrl: string;
   authInfo: AuthInfo;
   // payload: GetBlockedAreasRequest;
-  payload: GetRestrictedAreaRequest;
+  payload: GetAreaRequest;
   abortSignal?: AbortSignal;
 }
 

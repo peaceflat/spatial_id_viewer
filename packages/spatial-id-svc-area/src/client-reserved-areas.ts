@@ -1,4 +1,14 @@
 import {
+  error,
+  ErrorResponse,
+  GetAreaRequest,
+  SpatialDefinition,
+  SpatialDefinitions,
+  success,
+} from 'src/client-blocked-areas';
+
+import {
+  ApiResponseError,
   AuthInfo,
   CommonResponseHeader,
   fetchJson,
@@ -22,18 +32,29 @@ export interface GetReservedAreasRequest {
 }
 
 export interface GetReservedAreasResponse {
-  responseHeader: CommonResponseHeader;
-  reservedAreas: ReservedArea[];
-  status: StreamStatus;
+  responseHeader?: CommonResponseHeader;
+  objects: SpatialDefinition[];
+  // reservedAreas: ReservedArea[];
+  // status: StreamStatus;
+}
+export interface GetEmergencyAreas {
+  objects: SpatialDefinition[];
 }
 
 export interface GetReservedAreaResponse {
-  responseHeader: CommonResponseHeader;
-  reservedArea: ReservedArea;
+  responseHeader?: CommonResponseHeader;
+  // reservedArea: ReservedArea;
+  result: SpatialDefinition;
+  error: ErrorResponse;
 }
 
 export interface CreateReservedAreaRequest {
   reservedArea: ReservedArea;
+}
+
+export interface CreateEmergencyAreaRequest {
+  overwrite: boolean;
+  object: SpatialDefinition;
 }
 
 export interface CreateReservedAreaResponse {
@@ -44,7 +65,8 @@ export interface CreateReservedAreaResponse {
 export interface GetReservedAreasParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  payload: GetReservedAreasRequest;
+  // payload: GetReservedAreasRequest;
+  payload: GetAreaRequest;
   abortSignal?: AbortSignal;
 }
 
@@ -58,7 +80,7 @@ export const getReservedAreas = async function* ({
   for await (const chunk of fetchJsonStream<GetReservedAreasResponse>({
     method: 'POST',
     baseUrl,
-    path: '/area_service/reserved_areas_list',
+    path: '/uas/api/airmobility/v3/get-value',
     authInfo,
     payload,
     abortSignal,
@@ -82,10 +104,11 @@ export const getReservedArea = async ({
   abortSignal,
 }: GetReservedAreaParams) => {
   return await fetchJson<GetReservedAreaResponse>({
-    method: 'GET',
+    method: 'POST',
     baseUrl,
-    path: `/area_service/reserved_areas/${encodeURIComponent(id)}`,
+    path: '/uas/api/airmobility/v3/get-object',
     authInfo,
+    payload: { objectId: id },
     abortSignal,
   });
 };
@@ -93,7 +116,8 @@ export const getReservedArea = async ({
 export interface CreateReservedAreaParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  payload: CreateReservedAreaRequest;
+  // payload: CreateReservedAreaRequest;
+  payload: CreateEmergencyAreaRequest;
   abortSignal?: AbortSignal;
 }
 
@@ -104,14 +128,18 @@ export const createReservedArea = async ({
   payload,
   abortSignal,
 }: CreateReservedAreaParams) => {
-  return await fetchJson<CreateReservedAreaResponse>({
+  const resp = await fetchJson<success | error>({
     method: 'POST',
     baseUrl,
-    path: '/area_service/reserved_areas',
+    path: '/uas/api/airmobility/v3/put-object',
     authInfo,
     payload,
     abortSignal,
   });
+  if ('code' in resp) {
+    throw new ApiResponseError('failed to create: error occured with code ' + resp.code);
+  }
+  return resp;
 };
 
 export interface DeleteReservedAreaParams {
@@ -129,10 +157,11 @@ export const deleteReservedArea = async ({
   abortSignal,
 }: DeleteReservedAreaParams) => {
   await fetchJson({
-    method: 'DELETE',
+    method: 'POST',
     baseUrl,
-    path: `/area_service/reserved_areas/${encodeURIComponent(id)}`,
+    path: `/uas/api/airmobility/v3/delete-object`,
     authInfo,
+    payload: { objectId: id },
     abortSignal,
   });
 };
