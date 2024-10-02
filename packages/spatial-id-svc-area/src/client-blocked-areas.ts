@@ -191,6 +191,11 @@ export interface GetBlockedAreaResponse extends SpatialDefinition {
   error: ErrorResponse;
 }
 
+export interface GetWeatherRequest {
+  figure: SpatialFigure;
+  requestType: string[];
+}
+
 export interface CreateBlockedAreaRequest {
   blockedArea: BlockedArea;
 }
@@ -236,6 +241,35 @@ export const getBlockedAreas = async function* ({
   })) {
     yield chunk;
   }
+};
+
+export const getWeatherAreas = async function* ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: GetBlockedAreasParams) {
+  for await (const chunk of fetchJsonStream<GetBlockedAreasResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/get-value',
+    authInfo,
+    payload,
+    abortSignal,
+  })) {
+    yield chunk;
+  }
+};
+
+export const getWeather = async ({ baseUrl, authInfo, id, abortSignal }: GetBlockedAreaParams) => {
+  return await fetchJson<GetBlockedAreaResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/get-object',
+    authInfo,
+    payload: { objectId: id },
+    abortSignal,
+  });
 };
 
 export interface GetBlockedAreaParams {
@@ -329,6 +363,22 @@ export interface DeleteBlockedAreaParams {
 
 /** 割込禁止エリアを削除する */
 export const deleteBlockedArea = async ({
+  baseUrl,
+  authInfo,
+  id,
+  abortSignal,
+}: DeleteBlockedAreaParams) => {
+  await fetchJson({
+    method: 'POST',
+    baseUrl,
+    path: `/uas/api/airmobility/v3/delete-object`,
+    authInfo,
+    payload: { objectId: id },
+    abortSignal,
+  });
+};
+
+export const deleteWeather = async ({
   baseUrl,
   authInfo,
   id,
