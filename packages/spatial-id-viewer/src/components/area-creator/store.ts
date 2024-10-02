@@ -10,9 +10,15 @@ import { successResponse } from 'spatial-id-svc-route';
 import { createStoreHandlers, createStoreUpdater } from '#app/stores/utils';
 
 /** エリア情報を格納しているインターフェース */
-export interface IArea<AreaAdditionalInfo = any> {
+export interface IArea<
+  AreaAdditionalInfo = any,
+  CurrentWeatherInfo = any,
+  WeatherForecastInfo = any
+> {
   spatialIds: string[] | null;
   additionalInfo: AreaAdditionalInfo | null;
+  currentWeatherInfo?: CurrentWeatherInfo | null;
+  weatherForecastInfo?: WeatherForecastInfo | null;
 }
 
 /** エリア全体の情報を格納しているインターフェース */
@@ -20,12 +26,16 @@ export interface IAreas<
   WholeAreaInfo = any,
   AreaAdditionalInfo = any,
   RestrictionAdditionalInfo = any,
-  OwnerAddressInfo = any
+  OwnerAddressInfo = any,
+  CurrentWeatherInfo = any,
+  WeatherForecastInfo = any
 > {
   data: IArea<AreaAdditionalInfo>[];
   wholeAreaInfo: WholeAreaInfo | null;
   restrictionInfo?: RestrictionAdditionalInfo | null;
   ownerAddressInfo?: OwnerAddressInfo | null;
+  currentWeatherInfo?: CurrentWeatherInfo | null;
+  weatherForecastInfo?: WeatherForecastInfo | null;
 }
 
 class Area implements IArea {
@@ -45,6 +55,8 @@ class Area implements IArea {
   model: CuboidCollection | null = null;
 
   additionalInfo: any = null;
+  currentWeatherInfo?: any = null;
+  weatherForecastInfo?: any = null;
 
   async setPoint1(point: Cartesian3 | null) {
     this.point1 = point;
@@ -118,12 +130,12 @@ class Area implements IArea {
       Cartographic.fromCartesian(this.point1),
       this.tileZ
     );
-    console.log('tile 1', tile1);
+    // console.log('tile 1', tile1);
     const tile2 = new WebMercatorTilingScheme().positionToTileXY(
       Cartographic.fromCartesian(this.point2),
       this.tileZ
     );
-    console.log('tile 2', tile2);
+    // console.log('tile 2', tile2);
 
     this.tileX = [Math.min(tile1.x, tile2.x), Math.max(tile1.x, tile2.x)];
     this.tileY = [Math.min(tile1.y, tile2.y), Math.max(tile1.y, tile2.y)];
@@ -178,6 +190,8 @@ class Areas implements IAreas {
   wholeAreaInfo: any = null;
   restrictionInfo: any = null;
   ownerAddressInfo: any = null;
+  currentWeatherInfo?: any = null;
+  weatherForecastInfo?: any = null;
 
   get current() {
     return this.data[this.currentIndex] ?? null;
@@ -189,6 +203,8 @@ class Areas implements IAreas {
     this.wholeAreaInfo = null;
     this.restrictionInfo = null;
     this.ownerAddressInfo = null;
+    this.currentWeatherInfo = null;
+    this.weatherForecastInfo = null;
   }
 
   createNewArea() {
@@ -212,11 +228,15 @@ export const Pages = {
   InputTileZ: 2,
   InputTileF: 3,
   InputAreaSpecificInfo: 4,
-  SelectAddOrSend: 5,
-  InputRestrictionInfo: 6,
-  InputWholeAreaInfo: 7,
-  OwnerAddressInfo: 8,
-  Register: 9,
+  InputCurrentWeatherInfo: 5,
+  InputWeatherForecastInfo: 6,
+  InputAirRiskInfo: 7,
+  InputGroundRiskInfo: 8,
+  SelectAddOrSend: 9,
+  InputRestrictionInfo: 10,
+  InputWholeAreaInfo: 11,
+  OwnerAddressInfo: 12,
+  Register: 13,
 } as const;
 export type Pages = (typeof Pages)[keyof typeof Pages];
 
@@ -249,7 +269,19 @@ export interface OwnerAddressFragmentProps<OwnerAddressInfo = any> {
   navigatePrev: () => void;
   navigateNext: () => void;
 }
+export interface CurrentWeatherInfoFragmentProps<CurrentWeatherInfo = any> {
+  currentWeatherInfo: CurrentWeatherInfo | null;
+  setCurrentWeatherInfo: (currentWeatherInfo: CurrentWeatherInfo | null) => void;
+  navigatePrev: () => void;
+  navigateNext: () => void;
+}
 
+export interface WeatherForecastInfoFragmentProps<WeatherForecastInfo = any> {
+  weatherForecastInfo: WeatherForecastInfo | null;
+  setWeatherForecastInfo: (weatherForecastInfo: WeatherForecastInfo | null) => void;
+  navigatePrev: () => void;
+  navigateNext: () => void;
+}
 class Store {
   [immerable] = true;
 
@@ -257,6 +289,8 @@ class Store {
   wholeAreaInfoFragment: FC<WholeAreaInfoFragmentProps> | null = null;
   restrictionInfoFragment: FC<RestrictionTypeFragmentProps> | null = null;
   ownerAddressFragment: FC<OwnerAddressFragmentProps> | null = null;
+  currentWeatherInfoFragment: FC<CurrentWeatherInfoFragmentProps> | null = null;
+  weatherForecastInfoFragment: FC<WeatherForecastInfoFragmentProps> | null = null;
   registerFunc: ((areas: IAreas) => Promise<void | successResponse>) | null = null;
 
   clickedPoint: Cartesian3 | null = null;
@@ -280,6 +314,10 @@ class Store {
       })
     );
   };
+
+  // readonly resetHard = () =>{
+  //   this.set(s=>s.areas.reset())
+  // }
 }
 
 export const [WithStore, useStoreApi] = createStoreHandlers(Store);

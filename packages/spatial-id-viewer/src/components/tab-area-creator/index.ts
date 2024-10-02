@@ -1,5 +1,3 @@
-export type { AreaCreatorProps } from './component';
-export { AreaCreator } from './component';
 export type {
   AreaAdditionalInfoFragmentProps,
   CurrentWeatherInfoFragmentProps,
@@ -9,4 +7,6 @@ export type {
   RestrictionTypeFragmentProps,
   WeatherForecastInfoFragmentProps,
   WholeAreaInfoFragmentProps,
-} from './store';
+} from '../area-creator/store';
+export type { AreaCreatorProps } from './component';
+export { AreaCreator } from './component';

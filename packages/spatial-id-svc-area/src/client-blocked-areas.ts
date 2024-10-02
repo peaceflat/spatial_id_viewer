@@ -24,10 +24,56 @@ export interface EmergencyAreaVoxels {
   };
   vacant: boolean;
 }
+export interface CurrentWeather {
+  startTime: Date | string | null;
+  endTime: Date | string | null;
+  windDirection: number;
+  windSpeed: number;
+  cloudRate: number;
+  temperature: number;
+  dewPoint: number;
+  pressure: number;
+  precipitation: number;
+  visibility: number;
+  gggg: string;
+}
+
+export interface WeatherForecast {
+  startTime: Date | string | null;
+  endTime: Date | string | null;
+  windDirection: number;
+  windSpeed: number;
+  cloudRate: number;
+  precipitation: number;
+}
+
+export interface currentWeatherVoxel {
+  id: {
+    ID: 'string';
+  };
+  currentWeather: CurrentWeather;
+}
+
+export interface weatherForecastVoxel {
+  id: {
+    ID: 'string';
+  };
+  forecast: WeatherForecast;
+}
+
 export interface restrictedAreaDefinition {
   reference: string;
   type: string;
   voxelValues: AreaVoxel[];
+}
+
+export interface CurrentWeatherDefinition {
+  reference: string;
+  voxelValues: currentWeatherVoxel[];
+}
+export interface WeatherForecastDefinition {
+  reference: string;
+  voxelValues: weatherForecastVoxel[];
 }
 
 export interface emergencyAreaDefinition {
@@ -53,8 +99,8 @@ export interface SpatialDefinition {
   reserveArea?: any;
   channel?: any;
   overlayArea?: overlayAreaDefinition;
-  weather?: any;
-  weatherForecast?: any;
+  weather?: CurrentWeatherDefinition;
+  weatherForecast?: WeatherForecastDefinition;
   microwave?: any;
   groundRisk?: any;
   ariRisk?: any;
@@ -224,6 +270,13 @@ export interface CreateBlockedAreaParams {
   abortSignal?: AbortSignal;
 }
 
+export interface CreateWeatherParams {
+  baseUrl: string;
+  authInfo: AuthInfo;
+  payload: BlockedAreaRquest;
+  abortSignal?: AbortSignal;
+}
+
 /** 割込禁止エリアを生成する */
 export const createBlockedArea = async ({
   baseUrl,
@@ -231,6 +284,27 @@ export const createBlockedArea = async ({
   payload,
   abortSignal,
 }: CreateBlockedAreaParams) => {
+  const resp = await fetchJson<success | error>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/put-object',
+    authInfo,
+    payload,
+    abortSignal,
+  });
+
+  if ('code' in resp) {
+    throw new ApiResponseError('failed to create: error occured with code ' + resp.code);
+  }
+  return resp;
+};
+
+export const createWeather = async ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: CreateWeatherParams) => {
   const resp = await fetchJson<success | error>({
     method: 'POST',
     baseUrl,
