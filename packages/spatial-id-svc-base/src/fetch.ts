@@ -108,7 +108,7 @@ export const fetchRawJsonStream = async function* <T>(params: FetchJsonParams) {
       throw new ApiResponseError('failed to parse as json');
     }
 
-    if (parsed.error !== undefined) {
+    if (parsed.error?.code !== 0) {
       throw new ApiStreamError('response has an error', parsed.error);
     }
     yield parsed;
@@ -128,13 +128,14 @@ export const fetchJson = async <T extends WithCommonResponseHeader = WithCommonR
 
   let status: number;
   try {
-    status = resp.responseHeader.status;
+    status = resp.responseHeader?.status;
   } catch (e) {
     throw new ApiResponseError('failed to get resp.responseHeader.status');
   }
-
-  if (status !== 0) {
-    throw new ApiCommonStatusError(`invalid status: ${status}`, resp.responseHeader);
+  if (status !== undefined) {
+    if (status !== 0) {
+      throw new ApiCommonStatusError(`invalid status: ${status}`, resp.responseHeader);
+    }
   }
   return resp;
 };
@@ -151,14 +152,16 @@ export const fetchJsonStream = async function* <
   for await (const chunk of fetchRawJsonStream<T>(params)) {
     let status: number;
     try {
-      status = chunk.result.responseHeader.status;
+      status = chunk.result.responseHeader?.status;
     } catch (e) {
       throw new ApiResponseError('failed to get chunk.result.responseHeader.status');
     }
-
-    if (status !== 0) {
-      throw new ApiCommonStatusError(`invalid status: ${status}`, chunk.result.responseHeader);
+    if (status !== undefined) {
+      if (status !== 0) {
+        throw new ApiCommonStatusError(`invalid status: ${status}`, chunk.result.responseHeader);
+      }
     }
+
     yield chunk;
   }
 };

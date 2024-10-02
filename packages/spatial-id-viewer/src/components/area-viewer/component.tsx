@@ -25,6 +25,7 @@ export interface AreaViewerProps<Metadata extends Record<string, unknown> = Reco
   useModels: (store: IStore<Metadata>) => ModelControllers;
   /** モデルに適用するスタイル */
   tilesetStyle: Cesium3DTileStyle;
+  requestType: string;
   children?: ReactNode;
 }
 
@@ -112,7 +113,9 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
       <Navigation>
         {page === Pages.SelectFunction && <SelectFunctionFragment />}
         {page === Pages.ShowModel && <ShowModelFragment />}
-        {page === Pages.ShowModels && <ShowModelsFragment>{props.children}</ShowModelsFragment>}
+        {page === Pages.ShowModels && (
+          <ShowModelsFragment requestType={props.requestType}>{props.children}</ShowModelsFragment>
+        )}
       </Navigation>
     </ViewerContainer>
   );

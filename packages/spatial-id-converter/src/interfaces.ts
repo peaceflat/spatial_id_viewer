@@ -1,4 +1,5 @@
 import { Cartesian3 } from 'cesium';
+import { SpatialId } from 'src/spatial-id';
 
 /** 直方体 */
 export interface Cuboid<Metadata extends Record<string, unknown> = Record<string, never>> {
@@ -24,4 +25,26 @@ export abstract class CuboidCreator<
 > {
   /** 直方体の情報を作成する */
   abstract createCuboid(): Promise<Cuboid<Metadata>>;
+}
+
+export interface Figure {
+  identification: {
+    ID: SpatialId;
+  };
+  tube: {
+    start: {
+      latitude: number;
+      longitude: number;
+      altitude: number;
+      altitudeAttribute: string;
+    };
+    end: {
+      latitude: number;
+      longitude: number;
+      altitude: number;
+      altitudeAttribute: string;
+    };
+    radian: number;
+  };
+  polygon: any;
 }

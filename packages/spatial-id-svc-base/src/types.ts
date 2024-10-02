@@ -21,6 +21,7 @@ export interface AuthInfo {
 export interface StreamError {
   code: number;
   message: string;
+  details?: unknown[];
 }
 
 /** ストリーム API のレスポンスペイロード */
@@ -44,5 +45,5 @@ export interface CommonResponseHeader {
 
 /** 共通レスポンスヘッダーを持つオブジェクト */
 export interface WithCommonResponseHeader {
-  responseHeader: CommonResponseHeader;
+  responseHeader?: CommonResponseHeader;
 }
