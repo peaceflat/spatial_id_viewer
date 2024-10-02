@@ -23,20 +23,17 @@ const CurrentWeatherViewer = (props: Props) => {
   const [type, setType] = useState<string>('windDirection');
   const [tilesetStyle, setTilesetStyle] = useState<Cesium3DTileStyle>();
   const [tileOpacity, setTileOpacity] = useState(0.6);
-  console.log(type);
 
   const loadModel = useLoadModel('weather');
   const loadModels = useLoadModels('weather');
   const deleteModel = useDeleteModel();
 
   const onTileOpacityChange = (ev: ChangeEvent<HTMLInputElement>) => {
-    console.log(ev.target.valueAsNumber);
     setTileOpacity(ev.target.valueAsNumber);
   };
 
   useEffect(() => {
     setTilesetStyle(tilesetStyleFn(tileOpacity, type));
-    console.log(tilesetStyleFn(tileOpacity, type));
   }, [tileOpacity, type]);
 
   const useModels = createUseModels({
@@ -57,9 +54,9 @@ const CurrentWeatherViewer = (props: Props) => {
         requestType={RequestTypes.WEATHER}
         reference={props.reference}
       >
-        <RangeSlider
-          className="dark"
-          sizing="sm"
+        <input
+          type="range"
+          className="h-1 accent-yellow-500"
           value={tileOpacity}
           onChange={onTileOpacityChange}
           min={0}

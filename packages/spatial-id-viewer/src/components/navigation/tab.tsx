@@ -39,8 +39,8 @@ export const NavigationTabGroup = ({
         tabpanel: '',
       }}
       {...props}
-      onActiveTabChange={() => {
-        setTabNumber((prev: number) => (prev === 1 ? 2 : 1));
+      onActiveTabChange={(tab) => {
+        setTabNumber(tab + 1);
       }}
     >
       {children}

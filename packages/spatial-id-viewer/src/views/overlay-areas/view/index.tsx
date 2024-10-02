@@ -1,6 +1,6 @@
 import { Cesium3DTileStyle } from 'cesium';
 import Head from 'next/head';
-import { useCallback, useMemo, useRef } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLatest, useUnmount } from 'react-use';
 
 import { CuboidCollection, SpatialId } from 'spatial-id-converter';
@@ -111,6 +111,15 @@ const useModels = (store: IStore<OverlayAreaInfo>): ModelControllers => {
 };
 
 const OverlayAreasViewer = () => {
+  const [tilesetStyle, setTilesetStyle] = useState<Cesium3DTileStyle>();
+  const [tileOpacity, setTileOpacity] = useState(0.6);
+
+  const onTileOpacityChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    setTileOpacity(ev.target.valueAsNumber);
+  };
+  useEffect(() => {
+    setTilesetStyle(tilesetStyleFn(tileOpacity));
+  }, [tileOpacity]);
   return (
     <>
       <Head>
@@ -121,13 +130,24 @@ const OverlayAreasViewer = () => {
         useModels={useModels}
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.OVERLAY_AREA}
-      ></AreaViewer>
+      >
+        <input
+          type="range"
+          className="h-1 accent-yellow-500"
+          value={tileOpacity}
+          onChange={onTileOpacityChange}
+          min={0}
+          max={1}
+          step={0.01}
+        />
+      </AreaViewer>
     </>
   );
 };
 
-const tilesetStyle = new Cesium3DTileStyle({
-  color: 'rgba(0, 255, 255, 0.6)',
-});
+const tilesetStyleFn = (tileOpacity: number) =>
+  new Cesium3DTileStyle({
+    color: `hsla(0.5, 1, 0.5, ${tileOpacity})`,
+  });
 
 export default WithAuthGuard(WithStore(OverlayAreasViewer));

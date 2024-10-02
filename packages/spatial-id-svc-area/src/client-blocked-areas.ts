@@ -61,6 +61,13 @@ export interface weatherForecastVoxel {
   forecast: WeatherForecast;
 }
 
+export interface riskVoxel {
+  id: {
+    ID: 'string';
+  };
+  value: number;
+}
+
 export interface restrictedAreaDefinition {
   reference: string;
   type: string;
@@ -74,6 +81,16 @@ export interface CurrentWeatherDefinition {
 export interface WeatherForecastDefinition {
   reference: string;
   voxelValues: weatherForecastVoxel[];
+}
+
+export interface GroundRiskDeifinition {
+  reference: string;
+  voxelValues: riskVoxel[];
+}
+
+export interface AirRiskDefinition {
+  reference: string;
+  voxelValues: riskVoxel[];
 }
 
 export interface emergencyAreaDefinition {
@@ -162,9 +179,27 @@ export interface SpatialFigure {
   polygon: any;
 }
 
+export interface RiskLevel {
+  id: {
+    ID: string;
+  };
+  min: number;
+  max: number;
+  avarage: number;
+  sourceList: {
+    objectId: string;
+    riskLevel: number;
+  }[];
+}
+
 export interface GetAreaRequest {
   figure: SpatialFigure;
   requestType: string[];
+}
+
+export interface GetRiskLevelPayload {
+  figure: SpatialFigure;
+  zoomLevel: number;
 }
 
 export interface GetBlockedAreasRequest {
@@ -178,6 +213,11 @@ export interface GetBlockedAreasResponse extends SpatialDefinitions {
   responseHeader?: CommonResponseHeader;
   // blockedAreas: BlockedArea[];
   // status: StreamStatus;
+}
+
+export interface GetRiskLevelsResponse {
+  responseHeader?: CommonResponseHeader;
+  riskLevels: RiskLevel[];
 }
 
 export interface GetBlockedAreas {
@@ -224,6 +264,13 @@ export interface GetBlockedAreasParams {
   abortSignal?: AbortSignal;
 }
 
+export interface GetRiskLevelParams {
+  baseUrl: string;
+  authInfo: AuthInfo;
+  payload: GetRiskLevelPayload;
+  abortSignal?: AbortSignal;
+}
+
 /** 空間 ID の範囲内の割込禁止エリアを複数取得する */
 export const getBlockedAreas = async function* ({
   baseUrl,
@@ -261,6 +308,24 @@ export const getWeatherAreas = async function* ({
   }
 };
 
+export const getRiskLevels = async function* ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: GetRiskLevelParams) {
+  for await (const chunk of fetchJsonStream<GetRiskLevelsResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/get-risk-levels',
+    authInfo,
+    payload,
+    abortSignal,
+  })) {
+    yield chunk;
+  }
+};
+
 export const getWeather = async ({ baseUrl, authInfo, id, abortSignal }: GetBlockedAreaParams) => {
   return await fetchJson<GetBlockedAreaResponse>({
     method: 'POST',
@@ -270,6 +335,35 @@ export const getWeather = async ({ baseUrl, authInfo, id, abortSignal }: GetBloc
     payload: { objectId: id },
     abortSignal,
   });
+};
+
+export const getRisk = async ({ baseUrl, authInfo, id, abortSignal }: GetBlockedAreaParams) => {
+  return await fetchJson<GetBlockedAreaResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/get-object',
+    authInfo,
+    payload: { objectId: id },
+    abortSignal,
+  });
+};
+
+export const getRisks = async function* ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: GetBlockedAreasParams) {
+  for await (const chunk of fetchJsonStream<GetBlockedAreasResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/get-value',
+    authInfo,
+    payload,
+    abortSignal,
+  })) {
+    yield chunk;
+  }
 };
 
 export interface GetBlockedAreaParams {

@@ -1,6 +1,6 @@
 import { Cesium3DTileStyle } from 'cesium';
 import Head from 'next/head';
-import { useCallback } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useLatest } from 'react-use';
 import { useStore } from 'zustand';
 
@@ -278,9 +278,19 @@ const useDeleteModel = () => {
 };
 
 const ReservedRoutesViewer = () => {
+  const [tilesetStyle, setTilesetStyle] = useState<Cesium3DTileStyle>();
+  const [tileOpacity, setTileOpacity] = useState(0.6);
+
   const loadModel = useLoadModel();
   const loadModels = useLoadModels();
   const deleteModel = useDeleteModel();
+
+  const onTileOpacityChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    setTileOpacity(ev.target.valueAsNumber);
+  };
+  useEffect(() => {
+    setTilesetStyle(tilesetStyleFn(tileOpacity));
+  }, [tileOpacity]);
 
   const useModels = createUseModels({
     loadModel,
@@ -300,13 +310,23 @@ const ReservedRoutesViewer = () => {
         requestType={RequestTypes.RESERVE_AREA}
       >
         {/* <AdditionalSettings /> */}
+        <input
+          type="range"
+          className="h-1 accent-yellow-500"
+          value={tileOpacity}
+          onChange={onTileOpacityChange}
+          min={0}
+          max={1}
+          step={0.01}
+        />
       </AreaViewer>
     </>
   );
 };
 
-const tilesetStyle = new Cesium3DTileStyle({
-  color: 'rgba(0, 255, 255, 0.6)',
-});
+const tilesetStyleFn = (tileOpacity: number) =>
+  new Cesium3DTileStyle({
+    color: `hsla(0.5, 1, 0.5, ${tileOpacity})`,
+  });
 
 export default WithAuthGuard(WithStore(ReservedRoutesViewer));

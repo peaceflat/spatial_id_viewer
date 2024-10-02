@@ -1,10 +1,11 @@
 import { Cesium3DTileStyle } from 'cesium';
+import { RangeSlider } from 'flowbite-react';
 import Head from 'next/head';
-import { useCallback } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useLatest } from 'react-use';
 import { useStore } from 'zustand';
 
-import { CuboidCollection } from 'spatial-id-converter';
+import { CuboidCollection, SpatialId } from 'spatial-id-converter';
 import { RequestTypes } from 'spatial-id-svc-common';
 import {
   deleteBarrier,
@@ -58,7 +59,14 @@ const useLoadModels = () => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadModels = useCallback(async (displayDetails: DisplayDetails) => {
-    displayDetails.figure.identification.ID = displayDetails.figure.identification.ID.toString();
+    const spatialID = displayDetails.figure.identification.ID;
+    const newSpatialID = new SpatialId(
+      spatialID.z,
+      spatialID.f,
+      spatialID.x,
+      spatialID.y
+    ).toString();
+    displayDetails.figure.identification.ID = newSpatialID;
     const barriers = await processBarriers(
       getBarriers({
         baseUrl: apiBaseUrl,
@@ -106,6 +114,8 @@ const useDeleteModel = () => {
 };
 
 const BarriersViewer = () => {
+  const [tilesetStyle, setTilesetStyle] = useState<Cesium3DTileStyle>();
+  const [tileOpacity, setTileOpacity] = useState(0.6);
   const loadModel = useLoadModel();
   const loadModels = useLoadModels();
   const deleteModel = useDeleteModel();
@@ -115,6 +125,14 @@ const BarriersViewer = () => {
     loadModels,
     deleteModel,
   });
+
+  const onTileOpacityChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    setTileOpacity(ev.target.valueAsNumber);
+  };
+  useEffect(() => {
+    setTilesetStyle(tilesetStyleFn(tileOpacity));
+    console.log(tilesetStyleFn(tileOpacity));
+  }, [tileOpacity]);
 
   return (
     <>
@@ -127,14 +145,24 @@ const BarriersViewer = () => {
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.TERRAIN}
       >
-        <AdditionalSettings />
+        <input
+          type="range"
+          className="h-1 accent-yellow-500"
+          value={tileOpacity}
+          onChange={onTileOpacityChange}
+          min={0}
+          max={1}
+          step={0.01}
+        />
+        {/* <AdditionalSettings /> */}
       </AreaViewer>
     </>
   );
 };
 
-const tilesetStyle = new Cesium3DTileStyle({
-  color: 'rgba(0, 255, 255, 0.6)',
-});
+const tilesetStyleFn = (tileOpacity: number) =>
+  new Cesium3DTileStyle({
+    color: `rgba(0, 255, 255, ${tileOpacity})`,
+  });
 
 export default WithAuthGuard(WithStore(BarriersViewer));

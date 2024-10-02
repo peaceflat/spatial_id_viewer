@@ -93,17 +93,30 @@ export const Menu = () => {
       <MenuCategory>
         <MenuTitle>ルート設計</MenuTitle>
         <MenuEntry>
-          <Link href="/routes/create">設計</Link>
+          <Link href="/routes/create">生成</Link>
         </MenuEntry>
       </MenuCategory>
 
       <MenuCategory>
-        <MenuTitle>Weather</MenuTitle>
+        <MenuTitle>天気</MenuTitle>
         <MenuEntry>
           <Link href="/weather">表示・削除</Link>
         </MenuEntry>
         <MenuEntry>
-          <Link href="/weather/create">設計</Link>
+          <Link href="/weather/create">生成</Link>
+        </MenuEntry>
+      </MenuCategory>
+
+      {/* <MenuCategory>
+        <MenuTitle>地上リスク 航空リスク</MenuTitle>
+        <MenuEntry>
+          <Link href="/risks">表示</Link>
+        </MenuEntry>
+      </MenuCategory> */}
+      <MenuCategory>
+        <MenuTitle>リスクレベル</MenuTitle>
+        <MenuEntry>
+          <Link href="/risk-levels">表示</Link>
         </MenuEntry>
       </MenuCategory>
     </>
