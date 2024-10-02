@@ -51,16 +51,16 @@ export const Menu = () => {
       </MenuCategory>
 
       <MenuCategory>
-        <MenuTitle>割込禁止エリア予約</MenuTitle>
+        <MenuTitle>立ち入り禁止エリア</MenuTitle>
         <MenuEntry>
           <Link href="/blocked-areas">表示・削除</Link>
         </MenuEntry>
         <MenuEntry>
           <Link href="/blocked-areas/create">生成</Link>
         </MenuEntry>
-        <MenuEntry>
+        {/* <MenuEntry>
           <Link href="/blocked-areas/auto-create">位置情報による自動生成</Link>
-        </MenuEntry>
+        </MenuEntry> */}
       </MenuCategory>
 
       <MenuCategory>

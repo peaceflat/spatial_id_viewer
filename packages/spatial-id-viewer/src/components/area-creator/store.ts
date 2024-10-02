@@ -1,5 +1,6 @@
 import { Cartesian3, Cartographic, WebMercatorTilingScheme } from 'cesium';
 import { immerable, produce } from 'immer';
+import { Input } from 'postcss';
 import { FC } from 'react';
 import { Mutate, StoreApi } from 'zustand';
 
@@ -15,9 +16,14 @@ export interface IArea<AreaAdditionalInfo = any> {
 }
 
 /** エリア全体の情報を格納しているインターフェース */
-export interface IAreas<WholeAreaInfo = any, AreaAdditionalInfo = any> {
+export interface IAreas<
+  WholeAreaInfo = any,
+  AreaAdditionalInfo = any,
+  RestrictionAdditionalInfo = any
+> {
   data: IArea<AreaAdditionalInfo>[];
   wholeAreaInfo: WholeAreaInfo | null;
+  restrictionInfo?: RestrictionAdditionalInfo | null;
 }
 
 class Area implements IArea {
@@ -166,6 +172,7 @@ class Areas implements IAreas {
   data: Area[] = [];
   currentIndex = -1;
   wholeAreaInfo: any = null;
+  restrictionInfo: any = null;
 
   get current() {
     return this.data[this.currentIndex] ?? null;
@@ -175,6 +182,7 @@ class Areas implements IAreas {
     this.data = [];
     this.currentIndex = -1;
     this.wholeAreaInfo = null;
+    this.restrictionInfo = null;
   }
 
   createNewArea() {
@@ -199,8 +207,9 @@ export const Pages = {
   InputTileF: 3,
   InputAreaSpecificInfo: 4,
   SelectAddOrSend: 5,
-  InputWholeAreaInfo: 6,
-  Register: 7,
+  InputRestrictionInfo: 6,
+  InputWholeAreaInfo: 7,
+  Register: 8,
 } as const;
 export type Pages = (typeof Pages)[keyof typeof Pages];
 
@@ -220,11 +229,19 @@ export interface WholeAreaInfoFragmentProps<WholeAreaInfo = any> {
   navigateNext: () => void;
 }
 
+export interface RestrictionTypeFragmentProps<RestrictionAdditionalInfo = any> {
+  restrictionInfo: RestrictionAdditionalInfo | null;
+  setRestrictionAdditionalInfo: (restrictionInfo: RestrictionAdditionalInfo | null) => void;
+  navigatePrev: () => void;
+  navigateNext: () => void;
+}
+
 class Store {
   [immerable] = true;
 
   areaAdditionalInfoFragment: FC<AreaAdditionalInfoFragmentProps> | null = null;
   wholeAreaInfoFragment: FC<WholeAreaInfoFragmentProps> | null = null;
+  restrictionInfoFragment: FC<RestrictionTypeFragmentProps> | null = null;
   registerFunc: ((areas: IAreas) => Promise<void | successResponse>) | null = null;
 
   clickedPoint: Cartesian3 | null = null;

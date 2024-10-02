@@ -1,4 +1,5 @@
 import {
+  ApiResponseError,
   AuthInfo,
   CommonResponseHeader,
   fetchJson,
@@ -7,11 +8,96 @@ import {
 } from 'spatial-id-svc-base';
 import { SpatialIdentification } from 'spatial-id-svc-common';
 
+export interface BlockedAreaRquest {
+  overwrite: boolean;
+  object: SpatialDefinition;
+}
+
+export interface RestrictedAreaVoxels {
+  id: {
+    ID: 'string';
+  };
+}
+export interface restrictedAreaDefinition {
+  reference: string;
+  type: string;
+  voxelValues: RestrictedAreaVoxels[];
+}
+export interface SpatialDefinition {
+  objectId?: string;
+  terrain?: any;
+  building?: any;
+  restrictedArea?: restrictedAreaDefinition;
+  emergencyArea?: any;
+  reserveArea?: any;
+  channel?: any;
+  overlayArea?: any;
+  weather?: any;
+  weatherForecast?: any;
+  microwave?: any;
+  groundRisk?: any;
+  ariRisk?: any;
+}
+
+export interface SpatialDefinitions {
+  objects: SpatialDefinition[];
+}
+
+export interface success extends successResponse {
+  responseHeader?: CommonResponseHeader;
+}
+export interface successResponse {
+  objectId: string;
+  error: string;
+}
+
+export interface error extends ErrorResponse {
+  responseHeader?: CommonResponseHeader;
+}
+
+export interface ErrorDetails {
+  '@type': string;
+  property1: any;
+  property2: any;
+}
+
+export interface ErrorResponse {
+  code: number;
+  message: string;
+  details: ErrorDetails[];
+}
 export interface BlockedArea {
   id: string;
   spatialIdentifications: SpatialIdentification[];
   startTime: string;
   endTime: string;
+}
+
+export interface SpatialFigure {
+  identification: {
+    ID: string;
+  };
+  tube: {
+    start: {
+      latitude: number;
+      longitude: number;
+      altitude: number;
+      altitudeAttribute: string;
+    };
+    end: {
+      latitude: number;
+      longitude: number;
+      altitude: number;
+      altitudeAttribute: string;
+    };
+    radian: number;
+  };
+  polygon: any;
+}
+
+export interface GetRestrictedAreaRequest {
+  figure: SpatialFigure;
+  requestType: string[];
 }
 
 export interface GetBlockedAreasRequest {
@@ -21,15 +107,21 @@ export interface GetBlockedAreasRequest {
   endTime: string;
 }
 
-export interface GetBlockedAreasResponse {
-  responseHeader: CommonResponseHeader;
-  blockedAreas: BlockedArea[];
-  status: StreamStatus;
+export interface GetBlockedAreasResponse extends SpatialDefinitions {
+  responseHeader?: CommonResponseHeader;
+  // blockedAreas: BlockedArea[];
+  // status: StreamStatus;
 }
 
-export interface GetBlockedAreaResponse {
-  responseHeader: CommonResponseHeader;
-  blockedArea: BlockedArea;
+export interface GetBlockedAreas {
+  objects: SpatialDefinition[];
+}
+
+export interface GetBlockedAreaResponse extends SpatialDefinition {
+  responseHeader?: CommonResponseHeader;
+  // blockedArea: BlockedArea;
+  result: SpatialDefinition;
+  error: ErrorResponse;
 }
 
 export interface CreateBlockedAreaRequest {
@@ -55,7 +147,8 @@ export interface WatchBlockedAreasResponse {
 export interface GetBlockedAreasParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  payload: GetBlockedAreasRequest;
+  // payload: GetBlockedAreasRequest;
+  payload: GetRestrictedAreaRequest;
   abortSignal?: AbortSignal;
 }
 
@@ -69,7 +162,7 @@ export const getBlockedAreas = async function* ({
   for await (const chunk of fetchJsonStream<GetBlockedAreasResponse>({
     method: 'POST',
     baseUrl,
-    path: '/area_service/blocked_areas_list',
+    path: '/uas/api/airmobility/v3/get-value',
     authInfo,
     payload,
     abortSignal,
@@ -93,10 +186,11 @@ export const getBlockedArea = async ({
   abortSignal,
 }: GetBlockedAreaParams) => {
   return await fetchJson<GetBlockedAreaResponse>({
-    method: 'GET',
+    method: 'POST',
     baseUrl,
-    path: `/area_service/blocked_areas/${encodeURIComponent(id)}`,
+    path: '/uas/api/airmobility/v3/get-object',
     authInfo,
+    payload: { objectId: id },
     abortSignal,
   });
 };
@@ -104,7 +198,8 @@ export const getBlockedArea = async ({
 export interface CreateBlockedAreaParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  payload: CreateBlockedAreaRequest;
+  // payload: CreateBlockedAreaRequest;
+  payload: BlockedAreaRquest;
   abortSignal?: AbortSignal;
 }
 
@@ -115,14 +210,19 @@ export const createBlockedArea = async ({
   payload,
   abortSignal,
 }: CreateBlockedAreaParams) => {
-  return await fetchJson<CreateBlockedAreaResponse>({
+  const resp = await fetchJson<success | error>({
     method: 'POST',
     baseUrl,
-    path: '/area_service/blocked_areas',
+    path: '/uas/api/airmobility/v3/put-object',
     authInfo,
     payload,
     abortSignal,
   });
+
+  if ('code' in resp) {
+    throw new ApiResponseError('failed to create: error occured with code ' + resp.code);
+  }
+  return resp;
 };
 
 export interface DeleteBlockedAreaParams {
@@ -140,10 +240,11 @@ export const deleteBlockedArea = async ({
   abortSignal,
 }: DeleteBlockedAreaParams) => {
   await fetchJson({
-    method: 'DELETE',
+    method: 'POST',
     baseUrl,
-    path: `/area_service/blocked_areas/${encodeURIComponent(id)}`,
+    path: `/uas/api/airmobility/v3/delete-object`,
     authInfo,
+    payload: { objectId: id },
     abortSignal,
   });
 };

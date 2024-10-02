@@ -29,3 +29,11 @@ export enum RequestTypes {
   GROUND_RISK = 'GROUND_RISK',
   AIR_RISK = 'AIR_RISK',
 }
+
+export enum RestrictionTypes {
+  TYPE_FREE = 'TYPE_FREE',
+  TYPE_P = 'TYPE_P',
+  TYPE_R = 'TYPE_R',
+  TYPE_K = 'TYPE_K',
+  TYPE_N = 'TYPE_N',
+}

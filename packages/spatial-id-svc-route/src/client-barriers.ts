@@ -24,7 +24,7 @@ export interface BarrierDefinitionVoxel {
   id: {
     ID: 'string';
   };
-  vacant: boolean;
+  vacant?: boolean;
 }
 
 export interface terrainBuildingDefinition {
@@ -32,11 +32,17 @@ export interface terrainBuildingDefinition {
   voxelValues: BarrierDefinitionVoxel[];
 }
 
+export interface restrictedAreaDefinition {
+  reference: string;
+  type: string;
+  voxelValues: BarrierDefinitionVoxel[];
+}
+
 export interface SpatialDefinition {
   objectId?: string;
   terrain?: terrainBuildingDefinition;
   building?: terrainBuildingDefinition;
-  restrictedArea?: any;
+  restrictedArea?: restrictedAreaDefinition;
   emergencyArea?: any;
   reserveArea?: any;
   channel?: any;

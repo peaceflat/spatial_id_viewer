@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useLatest } from 'react-use';
 import { useStore } from 'zustand';
 
-import { CuboidCollection, SpatialId } from 'spatial-id-converter';
+import { CuboidCollection } from 'spatial-id-converter';
 import { RequestTypes } from 'spatial-id-svc-common';
 import { deleteBarrier, getBarrier, getBarriers } from 'spatial-id-svc-route';
 
@@ -53,14 +53,7 @@ const useLoadModels = () => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadModels = useCallback(async (displayDetails: DisplayDetails) => {
-    const spatialID = displayDetails.figure.identification.ID;
-    const newSpatialID = new SpatialId(
-      spatialID.z,
-      spatialID.f,
-      spatialID.x,
-      spatialID.y
-    ).toString();
-    displayDetails.figure.identification.ID = newSpatialID;
+    displayDetails.figure.identification.ID = displayDetails.figure.identification.ID.toString();
     const barriers = await processBarriers(
       getBarriers({
         baseUrl: apiBaseUrl,
@@ -129,7 +122,7 @@ const BarriersViewer = () => {
         tilesetStyle={tilesetStyle}
         requestType={RequestTypes.TERRAIN}
       >
-        {/* <AdditionalSettings /> */}
+        <AdditionalSettings />
       </AreaViewer>
     </>
   );

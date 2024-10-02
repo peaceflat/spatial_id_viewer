@@ -5,25 +5,21 @@ import { SpatialDefinition, SpatialDefinitions } from 'spatial-id-svc-route';
 import { mapGetOrSet } from '#app/utils/map-get-or-set';
 
 /** 表示するメタデータ */
-export interface BuildingBarrierInfo extends Record<string, unknown> {
+export interface Info extends Record<string, unknown> {
   id: string;
   spatialId: string;
 }
 
 export const createBarrierMap = (
-  map: Map<string, Map<string, SpatialId<BuildingBarrierInfo>>>,
+  map: Map<string, Map<string, SpatialId<Info>>>,
   object: any,
   type: string
 ) => {
-  const barrierId = object.objectId;
-  const spatialIds = mapGetOrSet(
-    map,
-    barrierId,
-    () => new Map<string, SpatialId<BuildingBarrierInfo>>()
-  );
+  const objectId = object.objectId;
+  const spatialIds = mapGetOrSet(map, objectId, () => new Map<string, SpatialId<Info>>());
 
-  for (const barrierDefinition of object[type].voxelValues) {
-    const spatialId = barrierDefinition.id.ID;
+  for (const definition of object[type].voxelValues) {
+    const spatialId = definition.id.ID;
     if (spatialIds.has(spatialId)) {
       continue;
     }
@@ -31,8 +27,8 @@ export const createBarrierMap = (
     try {
       spatialIds.set(
         spatialId,
-        SpatialId.fromString<BuildingBarrierInfo>(spatialId, {
-          id: barrierId,
+        SpatialId.fromString<Info>(spatialId, {
+          id: objectId,
           spatialId,
           // risk: 10,
         })
@@ -49,7 +45,7 @@ export const processBarriers = async (
   result: AsyncGenerator<StreamResponse<SpatialDefinition | SpatialDefinitions>>,
   type: string
 ) => {
-  let barriers = new Map<string, Map<string, SpatialId<BuildingBarrierInfo>>>();
+  let barriers = new Map<string, Map<string, SpatialId<Info>>>();
   for await (const resp of result) {
     if ('objectId' in resp.result) {
       barriers = createBarrierMap(barriers, resp.result, type);
