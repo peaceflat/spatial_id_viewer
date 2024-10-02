@@ -19,11 +19,13 @@ export interface IArea<AreaAdditionalInfo = any> {
 export interface IAreas<
   WholeAreaInfo = any,
   AreaAdditionalInfo = any,
-  RestrictionAdditionalInfo = any
+  RestrictionAdditionalInfo = any,
+  OwnerAddressInfo = any
 > {
   data: IArea<AreaAdditionalInfo>[];
   wholeAreaInfo: WholeAreaInfo | null;
   restrictionInfo?: RestrictionAdditionalInfo | null;
+  ownerAddressInfo?: OwnerAddressInfo | null;
 }
 
 class Area implements IArea {
@@ -173,6 +175,7 @@ class Areas implements IAreas {
   currentIndex = -1;
   wholeAreaInfo: any = null;
   restrictionInfo: any = null;
+  ownerAddressInfo: any = null;
 
   get current() {
     return this.data[this.currentIndex] ?? null;
@@ -183,6 +186,7 @@ class Areas implements IAreas {
     this.currentIndex = -1;
     this.wholeAreaInfo = null;
     this.restrictionInfo = null;
+    this.ownerAddressInfo = null;
   }
 
   createNewArea() {
@@ -209,7 +213,8 @@ export const Pages = {
   SelectAddOrSend: 5,
   InputRestrictionInfo: 6,
   InputWholeAreaInfo: 7,
-  Register: 8,
+  OwnerAddressInfo: 8,
+  Register: 9,
 } as const;
 export type Pages = (typeof Pages)[keyof typeof Pages];
 
@@ -236,12 +241,20 @@ export interface RestrictionTypeFragmentProps<RestrictionAdditionalInfo = any> {
   navigateNext: () => void;
 }
 
+export interface OwnerAddressFragmentProps<OwnerAddressInfo = any> {
+  ownerAddressInfo: OwnerAddressInfo | null;
+  setOwnerAddressInfo: (ownerAddressInfo: OwnerAddressInfo | null) => void;
+  navigatePrev: () => void;
+  navigateNext: () => void;
+}
+
 class Store {
   [immerable] = true;
 
   areaAdditionalInfoFragment: FC<AreaAdditionalInfoFragmentProps> | null = null;
   wholeAreaInfoFragment: FC<WholeAreaInfoFragmentProps> | null = null;
   restrictionInfoFragment: FC<RestrictionTypeFragmentProps> | null = null;
+  ownerAddressFragment: FC<OwnerAddressFragmentProps> | null = null;
   registerFunc: ((areas: IAreas) => Promise<void | successResponse>) | null = null;
 
   clickedPoint: Cartesian3 | null = null;
