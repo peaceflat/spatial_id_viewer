@@ -1,7 +1,10 @@
 import { Button } from 'flowbite-react';
+import { set } from 'immer/dist/internal';
 import { memo, useCallback, useState } from 'react';
 import { useMount } from 'react-use';
 import { useStore } from 'zustand';
+
+import { successResponse } from 'spatial-id-svc-route';
 
 import { useStoreApi } from '#app/components/area-creator/store';
 import { NavigationButtons } from '#app/components/navigation';
@@ -14,12 +17,13 @@ export const RegisterFragment = memo(() => {
   const registerFunc = useStore(store, (s) => s.registerFunc)!;
 
   const [result, setResult] = useState<boolean>(null);
-
+  const [response, setResponse] = useState<any>(null);
   const register = useCallback(async () => {
     setResult(null);
 
     try {
-      await registerFunc(store.getState().areas);
+      const response = await registerFunc(store.getState().areas);
+      setResponse(response);
       setResult(true);
     } catch (e) {
       console.error(e);
@@ -33,10 +37,11 @@ export const RegisterFragment = memo(() => {
   const onResetButtonClick = reset;
 
   return result === null ? (
-    <p>登録しています...</p>
+    <p key={`p1`}>登録しています...</p>
   ) : result ? (
     <>
-      <p>登録が正常に完了しました。</p>
+      <p key={`p2`}>登録が正常に完了しました。</p>
+      {response && response.objectId && <p>登録された ID: {response.objectId}</p>}
       <NavigationButtons>
         <Button onClick={onResetButtonClick}>さらに登録する</Button>
       </NavigationButtons>

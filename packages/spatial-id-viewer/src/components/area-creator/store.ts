@@ -4,6 +4,7 @@ import { FC } from 'react';
 import { Mutate, StoreApi } from 'zustand';
 
 import { CuboidCollection, getGeoidHeight, SpatialId } from 'spatial-id-converter';
+import { successResponse } from 'spatial-id-svc-route';
 
 import { createStoreHandlers, createStoreUpdater } from '#app/stores/utils';
 
@@ -224,7 +225,7 @@ class Store {
 
   areaAdditionalInfoFragment: FC<AreaAdditionalInfoFragmentProps> | null = null;
   wholeAreaInfoFragment: FC<WholeAreaInfoFragmentProps> | null = null;
-  registerFunc: ((areas: IAreas) => Promise<void>) | null = null;
+  registerFunc: ((areas: IAreas) => Promise<void | successResponse>) | null = null;
 
   clickedPoint: Cartesian3 | null = null;
   areas = new Areas();
