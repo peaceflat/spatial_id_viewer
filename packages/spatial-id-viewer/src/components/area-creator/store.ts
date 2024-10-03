@@ -13,12 +13,14 @@ import { createStoreHandlers, createStoreUpdater } from '#app/stores/utils';
 export interface IArea<
   AreaAdditionalInfo = any,
   CurrentWeatherInfo = any,
-  WeatherForecastInfo = any
+  WeatherForecastInfo = any,
+  RsiInfo = any
 > {
   spatialIds: string[] | null;
   additionalInfo: AreaAdditionalInfo | null;
   currentWeatherInfo?: CurrentWeatherInfo | null;
   weatherForecastInfo?: WeatherForecastInfo | null;
+  rsiInfo?: RsiInfo | null;
 }
 
 /** エリア全体の情報を格納しているインターフェース */
@@ -28,7 +30,9 @@ export interface IAreas<
   RestrictionAdditionalInfo = any,
   OwnerAddressInfo = any,
   CurrentWeatherInfo = any,
-  WeatherForecastInfo = any
+  WeatherForecastInfo = any,
+  MobileInfo = any,
+  WifiInfo = any
 > {
   data: IArea<AreaAdditionalInfo>[];
   wholeAreaInfo: WholeAreaInfo | null;
@@ -36,6 +40,8 @@ export interface IAreas<
   ownerAddressInfo?: OwnerAddressInfo | null;
   currentWeatherInfo?: CurrentWeatherInfo | null;
   weatherForecastInfo?: WeatherForecastInfo | null;
+  mobileInfo?: MobileInfo | null;
+  wifiInfo?: WifiInfo | null;
 }
 
 class Area implements IArea {
@@ -57,6 +63,7 @@ class Area implements IArea {
   additionalInfo: any = null;
   currentWeatherInfo?: any = null;
   weatherForecastInfo?: any = null;
+  rsiInfo?: any = null;
 
   async setPoint1(point: Cartesian3 | null) {
     this.point1 = point;
@@ -192,6 +199,8 @@ class Areas implements IAreas {
   ownerAddressInfo: any = null;
   currentWeatherInfo?: any = null;
   weatherForecastInfo?: any = null;
+  mobileInfo?: any = null;
+  wifiInfo?: any = null;
 
   get current() {
     return this.data[this.currentIndex] ?? null;
@@ -205,6 +214,8 @@ class Areas implements IAreas {
     this.ownerAddressInfo = null;
     this.currentWeatherInfo = null;
     this.weatherForecastInfo = null;
+    this.mobileInfo = null;
+    this.wifiInfo = null;
   }
 
   createNewArea() {
@@ -230,13 +241,14 @@ export const Pages = {
   InputAreaSpecificInfo: 4,
   InputCurrentWeatherInfo: 5,
   InputWeatherForecastInfo: 6,
-  InputAirRiskInfo: 7,
-  InputGroundRiskInfo: 8,
-  SelectAddOrSend: 9,
-  InputRestrictionInfo: 10,
-  InputWholeAreaInfo: 11,
-  OwnerAddressInfo: 12,
-  Register: 13,
+  InputRSI: 7,
+  SelectAddOrSend: 8,
+  InputRestrictionInfo: 9,
+  InputWholeAreaInfo: 10,
+  OwnerAddressInfo: 11,
+  InputMobileInfo: 12,
+  InputWifiInfo: 13,
+  Register: 14,
 } as const;
 export type Pages = (typeof Pages)[keyof typeof Pages];
 
@@ -282,6 +294,28 @@ export interface WeatherForecastInfoFragmentProps<WeatherForecastInfo = any> {
   navigatePrev: () => void;
   navigateNext: () => void;
 }
+
+export interface MobileInfoFragmentProps<MobileInfo = any> {
+  mobileInfo: MobileInfo | null;
+  setMobileInfo: (mobileInfo: MobileInfo | null) => void;
+  navigatePrev: () => void;
+  navigateNext: () => void;
+}
+
+export interface WifiInfoFragmentProps<WifiInfo = any> {
+  wifiInfo: WifiInfo | null;
+  setWifiInfo: (wifiInfo: WifiInfo | null) => void;
+  navigatePrev: () => void;
+  navigateNext: () => void;
+}
+
+export interface RsiInfoFragmentProps<RsiInfo = any> {
+  rsiInfo: RsiInfo | null;
+  setRsiInfo: (rsiInfo: RsiInfo | null) => void;
+  navigatePrev: () => void;
+  navigateNext: () => void;
+}
+
 class Store {
   [immerable] = true;
 
@@ -291,6 +325,9 @@ class Store {
   ownerAddressFragment: FC<OwnerAddressFragmentProps> | null = null;
   currentWeatherInfoFragment: FC<CurrentWeatherInfoFragmentProps> | null = null;
   weatherForecastInfoFragment: FC<WeatherForecastInfoFragmentProps> | null = null;
+  mobileInfoFragment: FC<MobileInfoFragmentProps> | null = null;
+  wifiInfoFragment: FC<WifiInfoFragmentProps> | null = null;
+  rsiInfoFragment: FC<RsiInfoFragmentProps> | null = null;
   registerFunc: ((areas: IAreas) => Promise<void | successResponse>) | null = null;
 
   clickedPoint: Cartesian3 | null = null;

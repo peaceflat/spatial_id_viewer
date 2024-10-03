@@ -107,12 +107,16 @@ export const Menu = () => {
         </MenuEntry>
       </MenuCategory>
 
-      {/* <MenuCategory>
-        <MenuTitle>地上リスク 航空リスク</MenuTitle>
+      <MenuCategory>
+        <MenuTitle>電波強度</MenuTitle>
         <MenuEntry>
-          <Link href="/risks">表示</Link>
+          <Link href="/signal-strength">表示・削除</Link>
         </MenuEntry>
-      </MenuCategory> */}
+        <MenuEntry>
+          <Link href="/signal-strength/create">生成</Link>
+        </MenuEntry>
+      </MenuCategory>
+
       <MenuCategory>
         <MenuTitle>リスクレベル</MenuTitle>
         <MenuEntry>

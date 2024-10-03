@@ -16,6 +16,10 @@ export const SelectAddOrSendFragment = memo(() => {
       ? Pages.InputWholeAreaInfo
       : s.ownerAddressFragment
       ? Pages.OwnerAddressInfo
+      : s.mobileInfoFragment
+      ? Pages.InputMobileInfo
+      : s.wifiInfoFragment
+      ? Pages.InputWifiInfo
       : Pages.Register
   );
   const update = useStore(store, (s) => s.update);

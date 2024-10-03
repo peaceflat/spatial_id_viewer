@@ -17,6 +17,8 @@ export const InputTileFFragment = memo(() => {
       ? Pages.InputCurrentWeatherInfo
       : s.weatherForecastInfoFragment
       ? Pages.InputWeatherForecastInfo
+      : s.rsiInfoFragment
+      ? Pages.InputRSI
       : Pages.SelectAddOrSend
   );
   const currentArea = useStore(store, (s) => s.areas.current);

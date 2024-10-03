@@ -5,8 +5,11 @@ export type {
   CurrentWeatherInfoFragmentProps,
   IArea,
   IAreas,
+  MobileInfoFragmentProps,
   OwnerAddressFragmentProps,
   RestrictionTypeFragmentProps,
+  RsiInfoFragmentProps,
   WeatherForecastInfoFragmentProps,
   WholeAreaInfoFragmentProps,
+  WifiInfoFragmentProps,
 } from './store';

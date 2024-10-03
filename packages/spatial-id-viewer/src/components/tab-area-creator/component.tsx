@@ -22,21 +22,27 @@ import { IAreas } from '#app/components/area-creator';
 import { AreaAdditionalInfoProxyFragment } from '#app/components/area-creator/fragments/area-additional-info-proxy';
 import { InputTileFFragment } from '#app/components/area-creator/fragments/input-tile-f';
 import { InputTileZFragment } from '#app/components/area-creator/fragments/input-tile-z';
+import { MobileInfoFragmentProxy } from '#app/components/area-creator/fragments/mobile-info-proxy';
 import { OwnerAddressProxy } from '#app/components/area-creator/fragments/owner-address-proxy';
 import { RegisterFragment } from '#app/components/area-creator/fragments/register';
 import { RestrictionInfoProxy } from '#app/components/area-creator/fragments/restriction-info-proxy';
+import { RsiInfoFragmentProxy } from '#app/components/area-creator/fragments/rsi-info-proxy';
 import { SelectAddOrSendFragment } from '#app/components/area-creator/fragments/select-add-or-send';
 import { SelectPointFragment } from '#app/components/area-creator/fragments/select-point';
 import { WholeAreaInfoProxyFragment } from '#app/components/area-creator/fragments/whole-area-info-proxy';
+import { WifiInfoFragmentProxy } from '#app/components/area-creator/fragments/wifi-info-proxy';
 import {
   AreaAdditionalInfoFragmentProps,
   CurrentWeatherInfoFragmentProps,
+  MobileInfoFragmentProps,
   OwnerAddressFragmentProps,
   Pages,
   RestrictionTypeFragmentProps,
+  RsiInfoFragmentProps,
   useStoreApi,
   WeatherForecastInfoFragmentProps,
   WholeAreaInfoFragmentProps,
+  WifiInfoFragmentProps,
   WithStore,
 } from '#app/components/area-creator/store';
 import { Navigation, NavigationWR } from '#app/components/navigation';
@@ -51,7 +57,10 @@ export interface AreaCreatorProps<
   RestrictionAdditionalInfo = any,
   OwnerAddressInfo = any,
   CurrentWeatherInfo = any,
-  WeatherForecastInfo = any
+  WeatherForecastInfo = any,
+  MobileInfo = any,
+  WifiInfo = any,
+  RsiInfo = any
 > {
   /** 単一エリアの追加の情報入力が必要な場合、その入力欄コンポーネント */
   areaAdditionalInfoFragment?: React.FC<AreaAdditionalInfoFragmentProps<AreaAdditionalInfo>>;
@@ -65,6 +74,10 @@ export interface AreaCreatorProps<
   currentWeatherInfoFragment?: React.FC<CurrentWeatherInfoFragmentProps<CurrentWeatherInfo>>;
 
   weatherForecastInfoFragment?: React.FC<WeatherForecastInfoFragmentProps<WeatherForecastInfo>>;
+
+  mobileInfoFragment?: React.FC<MobileInfoFragmentProps<MobileInfo>>;
+  wifiInfoFragment?: React.FC<WifiInfoFragmentProps<WifiInfo>>;
+  rsiInfoFragment?: React.FC<RsiInfoFragmentProps<RsiInfo>>;
   /** エリア登録を行う関数 */
   register: (
     areas: IAreas<
@@ -73,7 +86,9 @@ export interface AreaCreatorProps<
       RestrictionAdditionalInfo,
       OwnerAddressInfo,
       CurrentWeatherInfo,
-      WeatherForecastInfo
+      WeatherForecastInfo,
+      MobileInfo,
+      WifiInfo
     >
   ) => Promise<void | successResponse>;
 
@@ -88,7 +103,10 @@ const AreaCreatorLayout = <
   RestrictionAdditionalInfo = any,
   OwnerAddressInfo = any,
   CurrentWeatherInfo = any,
-  WeatherForecastInfo = any
+  WeatherForecastInfo = any,
+  MobileInfo = any,
+  WifiInfo = any,
+  RsiInfo = any
 >({
   areaAdditionalInfoFragment,
   wholeAreaInfoFragment,
@@ -96,6 +114,9 @@ const AreaCreatorLayout = <
   ownerAddressFragment,
   currentWeatherInfoFragment,
   weatherForecastInfoFragment,
+  mobileInfoFragment,
+  wifiInfoFragment,
+  rsiInfoFragment,
   register,
   reference,
 }: AreaCreatorProps<
@@ -104,7 +125,10 @@ const AreaCreatorLayout = <
   RestrictionAdditionalInfo,
   OwnerAddressInfo,
   CurrentWeatherInfo,
-  WeatherForecastInfo
+  WeatherForecastInfo,
+  MobileInfo,
+  WifiInfo,
+  RsiInfo
 >) => {
   //   const viewerRef = useRef<CesiumComponentRef<CesiumViewer>>();
   const viewerRef = reference;
@@ -142,6 +166,15 @@ const AreaCreatorLayout = <
     () => void update((s) => (s.weatherForecastInfoFragment = weatherForecastInfoFragment)),
     [weatherForecastInfoFragment]
   );
+
+  useEffect(
+    () => void update((s) => (s.mobileInfoFragment = mobileInfoFragment)),
+    [mobileInfoFragment]
+  );
+
+  useEffect(() => void update((s) => (s.wifiInfoFragment = wifiInfoFragment)), [wifiInfoFragment]);
+
+  useEffect(() => void update((s) => (s.rsiInfoFragment = rsiInfoFragment)), [rsiInfoFragment]);
 
   useEffect(() => void update((s) => (s.registerFunc = register)), [register]);
 
@@ -209,10 +242,13 @@ const AreaCreatorLayout = <
         {page === Pages.InputAreaSpecificInfo && <AreaAdditionalInfoProxyFragment />}
         {page === Pages.InputCurrentWeatherInfo && <CurrentWeatherInfoProxy />}
         {page === Pages.InputWeatherForecastInfo && <WeatherForecastInfoProxy />}
+        {page === Pages.InputRSI && <RsiInfoFragmentProxy />}
         {page === Pages.SelectAddOrSend && <SelectAddOrSendFragment />}
         {page === Pages.InputRestrictionInfo && <RestrictionInfoProxy />}
         {page === Pages.InputWholeAreaInfo && <WholeAreaInfoProxyFragment />}
         {page === Pages.OwnerAddressInfo && <OwnerAddressProxy />}
+        {page === Pages.InputMobileInfo && <MobileInfoFragmentProxy />}
+        {page === Pages.InputWifiInfo && <WifiInfoFragmentProxy />}
         {page === Pages.Register && <RegisterFragment />}
       </NavigationWR>
     </>
