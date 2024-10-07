@@ -15,12 +15,12 @@ export interface BlockedAreaRquest {
 
 export interface AreaVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
 }
 export interface EmergencyAreaVoxels {
   id: {
-    ID: 'string';
+    ID: string;
   };
   vacant: boolean;
 }
@@ -49,21 +49,21 @@ export interface WeatherForecast {
 
 export interface currentWeatherVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   currentWeather: CurrentWeather;
 }
 
 export interface weatherForecastVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   forecast: WeatherForecast;
 }
 
 export interface riskVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   value: number;
 }
@@ -100,9 +100,9 @@ export interface emergencyAreaDefinition {
 
 export interface overlayAreaDefinition {
   ownerAddress: {
-    grpc: 'string';
-    rest: 'string';
-    other: 'string';
+    grpc: string;
+    rest: string;
+    other: string;
   };
   voxelValues: AreaVoxel[];
 }
@@ -129,7 +129,7 @@ export interface WifiDefinition {
 
 export interface SignalVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   RSI: number;
 }

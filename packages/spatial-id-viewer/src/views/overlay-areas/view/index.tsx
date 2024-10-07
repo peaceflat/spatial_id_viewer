@@ -4,7 +4,13 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from '
 import { useLatest, useUnmount } from 'react-use';
 
 import { CuboidCollection, SpatialId } from 'spatial-id-converter';
-import { deleteOverlayArea, getOverlayArea, getOverlayAreas } from 'spatial-id-svc-area';
+import {
+  deleteOverlayArea,
+  GetAreaRequest,
+  getOverlayArea,
+  getOverlayAreas,
+  OverlayAreaRquest,
+} from 'spatial-id-svc-area';
 import { RequestTypes } from 'spatial-id-svc-common';
 
 import { AreaViewer, createUseModels, ModelControllers } from '#app/components/area-viewer';
@@ -44,19 +50,11 @@ const useLoadModels = () => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadModels = useCallback(async (displayDetails: DisplayDetails) => {
-    const spatialID = displayDetails.figure.identification.ID;
-    const newSpatialID = new SpatialId(
-      spatialID.z,
-      spatialID.f,
-      spatialID.x,
-      spatialID.y
-    ).toString();
-    displayDetails.figure.identification.ID = newSpatialID;
     const areas = await processAreas(
       getOverlayAreas({
         baseUrl: apiBaseUrl,
         authInfo: authInfo.current,
-        payload: displayDetails,
+        payload: displayDetails as GetAreaRequest,
       }),
       'overlayArea'
     );

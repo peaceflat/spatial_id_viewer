@@ -22,7 +22,7 @@ export interface Barrier {
 
 export interface BarrierDefinitionVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   vacant?: boolean;
 }
@@ -45,7 +45,7 @@ export interface emergencyAreaDefinition {
 
 export interface EmergencyAreaVoxels {
   id: {
-    ID: 'string';
+    ID: string;
   };
   vacant: boolean;
 }
@@ -56,7 +56,7 @@ export interface reservationTime {
     endTime: string;
   };
   occupation: string;
-  reserverId: string;
+  reserveId: string;
 }
 
 export interface reservedAreaDefinition {
@@ -67,7 +67,7 @@ export interface reservedAreaDefinition {
 
 export interface reserveAreaVoxels {
   id: {
-    ID: 'string';
+    ID: string;
   };
   reservationTime: reservationTime;
 }
@@ -142,18 +142,18 @@ export interface IdResponse {
   id: string;
 }
 
-export interface successResponse {
+interface successResponse {
   objectId: string;
   error: string;
 }
 
-export interface ErrorDetails {
+interface ErrorDetails {
   '@type': string;
   property1: any;
   property2: any;
 }
 
-export interface ErrorResponse {
+interface ErrorResponse {
   code: number;
   message: string;
   details: ErrorDetails[];

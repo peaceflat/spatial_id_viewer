@@ -55,14 +55,6 @@ export const useLoadModels = (type: string) => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadModels = useCallback(async (displayDetails: DisplayDetails) => {
-    const spatialID = displayDetails.figure.identification.ID;
-    const newSpatialID = new SpatialId(
-      spatialID.z,
-      spatialID.f,
-      spatialID.x,
-      spatialID.y
-    ).toString();
-    displayDetails.figure.identification.ID = newSpatialID;
     const areas = await processWeathers(
       getWeatherAreas({
         baseUrl: apiBaseUrl,

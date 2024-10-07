@@ -1,5 +1,3 @@
-import { SpatialDefinition, SpatialFigure } from 'src/client-barriers';
-
 import {
   ApiResponseError,
   AuthInfo,
@@ -10,6 +8,8 @@ import {
   StreamStatus,
 } from 'spatial-id-svc-base';
 import { Point, SpatialIdentification } from 'spatial-id-svc-common';
+
+import { SpatialDefinition, SpatialFigure } from './client-barriers';
 
 export interface Route {
   route: SpatialIdentification[];

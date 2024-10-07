@@ -43,14 +43,6 @@ const useLoadModelsRisk = () => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadModelsRisk = useCallback(async (displayDetails: DisplayDetails) => {
-    const spatialID = displayDetails.figure.identification.ID;
-    const newSpatialID = new SpatialId(
-      spatialID.z,
-      spatialID.f,
-      spatialID.x,
-      spatialID.y
-    ).toString();
-    displayDetails.figure.identification.ID = newSpatialID;
     const spatialIds = await processRiskLevels(
       getRiskLevels({
         baseUrl: apiBaseUrl,

@@ -103,15 +103,6 @@ const useLoadModels = (stream = false) => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadAirSpaceModels = useCallback(async (displayDetails: DisplayDetails) => {
-    // const models = await convertToModels(fetchAircraftsInfo(authInfo.current, bbox));
-    const spatialID = displayDetails.figure.identification.ID;
-    const newSpatialID = new SpatialId(
-      spatialID.z,
-      spatialID.f,
-      spatialID.x,
-      spatialID.y
-    ).toString();
-    displayDetails.figure.identification.ID = newSpatialID;
     displayDetails.includeReserveArea = true;
     let reservedRoutes = null;
 
