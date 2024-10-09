@@ -8,7 +8,7 @@ import { GetRiskLevelPayload, getRiskLevels } from 'spatial-id-svc-area';
 import { StreamResponse } from 'spatial-id-svc-base';
 import { RequestTypes } from 'spatial-id-svc-common';
 
-import { AreaViewer, createUseModels } from '#app/components/area-viewer';
+import { AreaViewer } from '#app/components/area-viewer';
 import { createUseRiskLevelsModels } from '#app/components/area-viewer/create-use-risk-levels-models';
 import { DisplayDetails } from '#app/components/area-viewer/interface';
 import { WithStore } from '#app/components/area-viewer/store';
