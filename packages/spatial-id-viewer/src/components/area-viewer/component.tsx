@@ -6,6 +6,8 @@ import { CesiumComponentRef, Entity, PointGraphics, PolylineGraphics } from 'res
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
+import { RequestTypes } from 'spatial-id-svc-common';
+
 import { SelectFunctionFragment } from '#app/components/area-viewer/fragments/select-function';
 import { SelectAirSpaceFragment } from '#app/components/area-viewer/fragments/select-function-airspace';
 import { ShowModelFragment } from '#app/components/area-viewer/fragments/show-model';
@@ -20,6 +22,7 @@ import {
   useStoreApi,
   WithStore,
 } from '#app/components/area-viewer/store';
+import { ColorBar } from '#app/components/color-bar';
 import { Navigation } from '#app/components/navigation';
 import { Viewer, ViewerContainer } from '#app/components/viewer';
 import { CuboidCollectionModel } from '#app/components/viewer/cuboid-collection-model';
@@ -248,6 +251,7 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
         {[...models.entries()].map(([modelId, model]) => (
           <CuboidCollectionModel key={modelId} data={model} style={props.tilesetStyle} />
         ))}
+        {props.requestType === RequestTypes.RISK_LEVEL && <ColorBar />}
       </Viewer>
       <Navigation>
         {page === Pages.SelectFunction && <SelectFunctionFragment />}
