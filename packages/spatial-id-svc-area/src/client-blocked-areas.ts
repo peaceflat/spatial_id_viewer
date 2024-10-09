@@ -107,6 +107,33 @@ export interface overlayAreaDefinition {
   voxelValues: AreaVoxel[];
 }
 
+export interface MicrowaveDefinition {
+  mobile?: MobileDefinition;
+  wifi?: WifiDefinition;
+}
+
+export interface MobileDefinition {
+  reference: string;
+  plmnId: {
+    mobileCountryCode: string;
+    mobileNetworkCode: string;
+  };
+  voxelValues: SignalVoxel[];
+}
+
+export interface WifiDefinition {
+  reference: string;
+  ssid: string;
+  voxelValues: SignalVoxel[];
+}
+
+export interface SignalVoxel {
+  id: {
+    ID: 'string';
+  };
+  RSI: number;
+}
+
 export interface SpatialDefinition {
   objectId?: string;
   terrain?: any;
@@ -118,7 +145,7 @@ export interface SpatialDefinition {
   overlayArea?: overlayAreaDefinition;
   weather?: CurrentWeatherDefinition;
   weatherForecast?: WeatherForecastDefinition;
-  microwave?: any;
+  microwave?: MicrowaveDefinition;
   groundRisk?: any;
   ariRisk?: any;
 }
@@ -405,6 +432,13 @@ export interface CreateWeatherParams {
   abortSignal?: AbortSignal;
 }
 
+export interface CreateSignalsParams {
+  baseUrl: string;
+  authInfo: AuthInfo;
+  payload: BlockedAreaRquest;
+  abortSignal?: AbortSignal;
+}
+
 /** 割込禁止エリアを生成する */
 export const createBlockedArea = async ({
   baseUrl,
@@ -433,6 +467,27 @@ export const createWeather = async ({
   payload,
   abortSignal,
 }: CreateWeatherParams) => {
+  const resp = await fetchJson<success | error>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/put-object',
+    authInfo,
+    payload,
+    abortSignal,
+  });
+
+  if ('code' in resp) {
+    throw new ApiResponseError('failed to create: error occured with code ' + resp.code);
+  }
+  return resp;
+};
+
+export const createSignals = async ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: CreateSignalsParams) => {
   const resp = await fetchJson<success | error>({
     method: 'POST',
     baseUrl,
