@@ -1,13 +1,4 @@
 import {
-  error,
-  ErrorResponse,
-  GetAreaRequest,
-  SpatialDefinition,
-  SpatialDefinitions,
-  success,
-} from 'src/client-blocked-areas';
-
-import {
   ApiResponseError,
   AuthInfo,
   CommonResponseHeader,
@@ -16,6 +7,15 @@ import {
   StreamStatus,
 } from 'spatial-id-svc-base';
 import { SpatialIdentification } from 'spatial-id-svc-common';
+
+import {
+  error,
+  ErrorResponse,
+  GetAreaRequest,
+  SpatialDefinition,
+  SpatialDefinitions,
+  success,
+} from './client-blocked-areas';
 
 export interface ReservedArea {
   id: string;

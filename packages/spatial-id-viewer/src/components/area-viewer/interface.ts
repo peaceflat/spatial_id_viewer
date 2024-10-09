@@ -1,7 +1,7 @@
-import { Figure, SpatialId } from 'spatial-id-converter';
+import { Figure, FigureRequest, SpatialId } from 'spatial-id-converter';
 
 export interface DisplayDetails {
-  figure: Figure;
+  figure: FigureRequest;
   requestType?: string[];
   period?: {
     startTime: Date;

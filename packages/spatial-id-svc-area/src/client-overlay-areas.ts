@@ -1,19 +1,19 @@
 import {
-  error,
-  ErrorResponse,
-  GetAreaRequest,
-  SpatialDefinition,
-  SpatialDefinitions,
-  success,
-} from 'src/client-blocked-areas';
-
-import {
   ApiResponseError,
   AuthInfo,
   CommonResponseHeader,
   fetchJson,
   fetchJsonStream,
 } from 'spatial-id-svc-base';
+
+import {
+  error,
+  ErrorResponse,
+  GetAreaRequest,
+  SpatialDefinition,
+  SpatialDefinitions,
+  success,
+} from './client-blocked-areas';
 
 export interface GetOverlayAreas {
   objects: SpatialDefinition[];

@@ -15,12 +15,12 @@ export interface BlockedAreaRquest {
 
 export interface AreaVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
 }
 export interface EmergencyAreaVoxels {
   id: {
-    ID: 'string';
+    ID: string;
   };
   vacant: boolean;
 }
@@ -49,21 +49,21 @@ export interface WeatherForecast {
 
 export interface currentWeatherVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   currentWeather: CurrentWeather;
 }
 
 export interface weatherForecastVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   forecast: WeatherForecast;
 }
 
 export interface riskVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   value: number;
 }
@@ -100,9 +100,9 @@ export interface emergencyAreaDefinition {
 
 export interface overlayAreaDefinition {
   ownerAddress: {
-    grpc: 'string';
-    rest: 'string';
-    other: 'string';
+    grpc: string;
+    rest: string;
+    other: string;
   };
   voxelValues: AreaVoxel[];
 }
@@ -129,7 +129,7 @@ export interface WifiDefinition {
 
 export interface SignalVoxel {
   id: {
-    ID: 'string';
+    ID: string;
   };
   RSI: number;
 }
@@ -262,6 +262,10 @@ export interface GetWeatherRequest {
   figure: SpatialFigure;
   requestType: string[];
 }
+export interface GetSignalRequest {
+  figure: SpatialFigure;
+  requestType: string[];
+}
 
 export interface CreateBlockedAreaRequest {
   blockedArea: BlockedArea;
@@ -335,6 +339,24 @@ export const getWeatherAreas = async function* ({
   }
 };
 
+export const getSignalAreas = async function* ({
+  baseUrl,
+  authInfo,
+  payload,
+  abortSignal,
+}: GetBlockedAreasParams) {
+  for await (const chunk of fetchJsonStream<GetBlockedAreasResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/get-value',
+    authInfo,
+    payload,
+    abortSignal,
+  })) {
+    yield chunk;
+  }
+};
+
 export const getRiskLevels = async function* ({
   baseUrl,
   authInfo,
@@ -354,6 +376,22 @@ export const getRiskLevels = async function* ({
 };
 
 export const getWeather = async ({ baseUrl, authInfo, id, abortSignal }: GetBlockedAreaParams) => {
+  return await fetchJson<GetBlockedAreaResponse>({
+    method: 'POST',
+    baseUrl,
+    path: '/uas/api/airmobility/v3/get-object',
+    authInfo,
+    payload: { objectId: id },
+    abortSignal,
+  });
+};
+
+export const getSignalArea = async ({
+  baseUrl,
+  authInfo,
+  id,
+  abortSignal,
+}: GetBlockedAreaParams) => {
   return await fetchJson<GetBlockedAreaResponse>({
     method: 'POST',
     baseUrl,
@@ -528,6 +566,22 @@ export const deleteBlockedArea = async ({
 };
 
 export const deleteWeather = async ({
+  baseUrl,
+  authInfo,
+  id,
+  abortSignal,
+}: DeleteBlockedAreaParams) => {
+  await fetchJson({
+    method: 'POST',
+    baseUrl,
+    path: `/uas/api/airmobility/v3/delete-object`,
+    authInfo,
+    payload: { objectId: id },
+    abortSignal,
+  });
+};
+
+export const deleteSignal = async ({
   baseUrl,
   authInfo,
   id,

@@ -46,8 +46,8 @@ const useRegister = () => {
         id: { ID: spatialID },
         reservationTime: {
           period: {
-            startTime: waypoints.routeInfo.startTime,
-            endTime: waypoints.routeInfo.endTime,
+            startTime: `${waypoints.routeInfo.startTime}`,
+            endTime: `${waypoints.routeInfo.endTime}`,
           },
           occupation: waypoints.routeInfo.occupation,
           reserveId: waypoints.routeInfo.reservationId,

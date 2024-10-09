@@ -7,6 +7,7 @@ import { useStore } from 'zustand';
 import { CuboidCollection, SpatialId } from 'spatial-id-converter';
 import {
   deleteReservedArea,
+  GetAreaRequest,
   GetEmergencyAreas,
   getReservedArea,
   getReservedAreas,
@@ -105,19 +106,11 @@ const useLoadModels = () => {
   const authInfo = useLatest(useAuthInfo((s) => s.authInfo));
 
   const loadModels = useCallback(async (displayDetails: DisplayDetails) => {
-    const spatialID = displayDetails.figure.identification.ID;
-    const newSpatialID = new SpatialId(
-      spatialID.z,
-      spatialID.f,
-      spatialID.x,
-      spatialID.y
-    ).toString();
-    displayDetails.figure.identification.ID = newSpatialID;
     const areas = await processReservedAreas(
       getReservedAreas({
         baseUrl: apiBaseUrl,
         authInfo: authInfo.current,
-        payload: displayDetails,
+        payload: displayDetails as GetAreaRequest,
       }),
       'emergencyArea'
     );

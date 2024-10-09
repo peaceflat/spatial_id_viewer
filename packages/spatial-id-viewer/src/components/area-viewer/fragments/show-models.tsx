@@ -181,12 +181,19 @@ export const ShowModelsFragment = memo(
       if (!isTileFAuto) {
         figure.identification.ID.f = tileF;
       }
+      const spatialID = figure.identification.ID;
+      const newSpatialID = new SpatialId(
+        spatialID.z,
+        spatialID.f,
+        spatialID.x,
+        spatialID.y
+      ).toString();
 
       figure.tube.start.altitude = tileF1;
       figure.tube.end.altitude = tileF2;
 
       const displayDetails: any = {
-        figure: figure,
+        figure: { ...figure, identification: { ID: newSpatialID } },
       };
 
       if (requestType === RequestTypes.AIR_SPACE) {
