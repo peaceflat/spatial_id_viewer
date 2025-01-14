@@ -86,7 +86,7 @@ export const getOverlayArea = async function* ({
   id,
   abortSignal,
 }: GetOverlayAreaParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetOverlayAreaResponse>({
     method: 'POST',
     baseUrl,
@@ -95,11 +95,11 @@ export const getOverlayArea = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
-    }
-    chunk.result.objectId = objectId;
+    // if (chunk.result.objectId !== '0') {
+    //   objectId = chunk.result.objectId;
+    //   continue;
+    // }
+    // chunk.result.objectId = objectId;
     yield chunk;
   }
 };

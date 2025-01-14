@@ -224,8 +224,7 @@ export const getBarriers = async function* ({
   payload,
   abortSignal,
 }: GetBarriersParams) {
-  // for await (const chunk of fetchJsonStream<GetBarrierResponse>({
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBarriersResponseNew>({
     method: 'POST',
     baseUrl,
@@ -234,11 +233,11 @@ export const getBarriers = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
-    }
-    chunk.result.objects[0].objectId = objectId;
+    // if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+    //   objectId = chunk?.result?.objects[0]?.objectId;
+    //   continue;
+    // }
+    // chunk.result.objects[0].objectId = objectId;
     yield chunk;
   }
 };
@@ -257,7 +256,7 @@ export const getBarrier = async function* ({
   id,
   abortSignal,
 }: GetBarrierParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBarrierResponseNew>({
     method: 'POST',
     baseUrl,
@@ -266,11 +265,11 @@ export const getBarrier = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
-    }
-    chunk.result.objectId = objectId;
+    // if (chunk.result.objectId !== '0') {
+    //   objectId = chunk.result.objectId;
+    //   continue;
+    // }
+    // chunk.result.objectId = objectId;
     yield chunk;
   }
 };
@@ -343,7 +342,7 @@ export const getPrivateBarriers = async function* ({
   payload,
   abortSignal,
 }: GetPrivateBarriersParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBarriersResponseNew>({
     method: 'POST',
     baseUrl,
@@ -352,11 +351,11 @@ export const getPrivateBarriers = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
-    }
-    chunk.result.objects[0].objectId = objectId;
+    // if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+    //   objectId = chunk?.result?.objects[0]?.objectId;
+    //   continue;
+    // }
+    // chunk.result.objects[0].objectId = objectId;
     yield chunk;
   }
 };
@@ -375,7 +374,7 @@ export const getPrivateBarrier = async function* ({
   id,
   abortSignal,
 }: GetPrivateBarrierParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBarrierResponseNew>({
     method: 'POST',
     baseUrl,
@@ -384,11 +383,11 @@ export const getPrivateBarrier = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
-    }
-    chunk.result.objectId = objectId;
+    // if (chunk.result.objectId !== '0') {
+    //   objectId = chunk.result.objectId;
+    //   continue;
+    // }
+    // chunk.result.objectId = objectId;
     yield chunk;
   }
 };

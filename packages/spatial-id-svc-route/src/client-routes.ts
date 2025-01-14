@@ -238,7 +238,7 @@ export const getReservedRoutes = async function* ({
   payload,
   abortSignal,
 }: GetReservedRoutesParamsV3) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetReservedRoutesResponseV3>({
     method: 'POST',
     baseUrl,
@@ -247,11 +247,11 @@ export const getReservedRoutes = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
-    }
-    chunk.result.objects[0].objectId = objectId;
+    // if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+    //   objectId = chunk?.result?.objects[0]?.objectId;
+    //   continue;
+    // }
+    // chunk.result.objects[0].objectId = objectId;
     yield chunk;
   }
 };
@@ -302,7 +302,7 @@ export const getReservedRoute = async function* ({
   id,
   abortSignal,
 }: GetReservedRouteParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetReservedRouteResponseV3>({
     method: 'POST',
     baseUrl,
@@ -311,11 +311,11 @@ export const getReservedRoute = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
-    }
-    chunk.result.objectId = objectId;
+    // if (chunk.result.objectId !== '0') {
+    //   objectId = chunk.result.objectId;
+    //   continue;
+    // }
+    // chunk.result.objectId = objectId;
     yield chunk;
   }
 };

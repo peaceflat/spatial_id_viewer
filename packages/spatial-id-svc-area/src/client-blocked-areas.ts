@@ -313,7 +313,7 @@ export const getBlockedAreas = async function* ({
   payload,
   abortSignal,
 }: GetBlockedAreasParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBlockedAreasResponse>({
     method: 'POST',
     baseUrl,
@@ -322,11 +322,11 @@ export const getBlockedAreas = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
-    }
-    chunk.result.objects[0].objectId = objectId;
+    // if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+    //   objectId = chunk?.result?.objects[0]?.objectId;
+    //   continue;
+    // }
+    // chunk.result.objects[0].objectId = objectId;
     yield chunk;
   }
 };
@@ -337,7 +337,7 @@ export const getWeatherAreas = async function* ({
   payload,
   abortSignal,
 }: GetBlockedAreasParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBlockedAreasResponse>({
     method: 'POST',
     baseUrl,
@@ -346,11 +346,11 @@ export const getWeatherAreas = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
-    }
-    chunk.result.objects[0].objectId = objectId;
+    // if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+    //   objectId = chunk?.result?.objects[0]?.objectId;
+    //   continue;
+    // }
+    // chunk.result.objects[0].objectId = objectId;
     yield chunk;
   }
 };
@@ -361,8 +361,8 @@ export const getSignalAreas = async function* ({
   payload,
   abortSignal,
 }: GetBlockedAreasParams) {
-  let objectId = '0';
-  let networkCode = '0';
+  // let objectId = '0';
+  // let networkCode = '0';
   for await (const chunk of fetchJsonStream<GetBlockedAreasResponse>({
     method: 'POST',
     baseUrl,
@@ -371,29 +371,29 @@ export const getSignalAreas = async function* ({
     payload,
     abortSignal,
   })) {
-    const objects = chunk?.result?.objects;
+    // const objects = chunk?.result?.objects;
 
-    if (objects?.[0]) {
-      const object = objects[0];
-      const { objectId: currentObjectId, microwave } = object;
+    // if (objects?.[0]) {
+    //   const object = objects[0];
+    //   const { objectId: currentObjectId, microwave } = object;
 
-      if (currentObjectId !== '0') {
-        objectId = currentObjectId;
-        if (microwave?.mobile) {
-          networkCode = microwave.mobile.plmnId?.mobileNetworkCode ?? networkCode;
-        }
-        continue;
-      }
+    //   if (currentObjectId !== '0') {
+    //     objectId = currentObjectId;
+    //     if (microwave?.mobile) {
+    //       networkCode = microwave.mobile.plmnId?.mobileNetworkCode ?? networkCode;
+    //     }
+    //     continue;
+    //   }
 
-      object.objectId = objectId;
+    //   object.objectId = objectId;
 
-      if (microwave?.mobile) {
-        microwave.mobile.plmnId = {
-          ...(microwave.mobile.plmnId || {}),
-          mobileNetworkCode: networkCode,
-        };
-      }
-    }
+    //   if (microwave?.mobile) {
+    //     microwave.mobile.plmnId = {
+    //       ...(microwave.mobile.plmnId || {}),
+    //       mobileNetworkCode: networkCode,
+    //     };
+    //   }
+    // }
 
     yield chunk;
   }
@@ -423,7 +423,7 @@ export const getWeather = async function* ({
   id,
   abortSignal,
 }: GetBlockedAreaParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBlockedAreaResponse>({
     method: 'POST',
     baseUrl,
@@ -432,11 +432,11 @@ export const getWeather = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
-    }
-    chunk.result.objectId = objectId;
+    // if (chunk.result.objectId !== '0') {
+    //   objectId = chunk.result.objectId;
+    //   continue;
+    // }
+    // chunk.result.objectId = objectId;
     yield chunk;
   }
 };
@@ -447,7 +447,7 @@ export const getSignalArea = async function* ({
   id,
   abortSignal,
 }: GetBlockedAreaParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBlockedAreaResponse>({
     method: 'POST',
     baseUrl,
@@ -456,11 +456,11 @@ export const getSignalArea = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
-    }
-    chunk.result.objectId = objectId;
+    // if (chunk.result.objectId !== '0') {
+    //   objectId = chunk.result.objectId;
+    //   continue;
+    // }
+    // chunk.result.objectId = objectId;
     yield chunk;
   }
 };
@@ -507,7 +507,7 @@ export const getBlockedArea = async function* ({
   id,
   abortSignal,
 }: GetBlockedAreaParams) {
-  let objectId = '0';
+  // let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBlockedAreaResponse>({
     method: 'POST',
     baseUrl,
@@ -516,11 +516,11 @@ export const getBlockedArea = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
-    }
-    chunk.result.objectId = objectId;
+    // if (chunk.result.objectId !== '0') {
+    //   objectId = chunk.result.objectId;
+    //   continue;
+    // }
+    // chunk.result.objectId = objectId;
     yield chunk;
   }
 };
