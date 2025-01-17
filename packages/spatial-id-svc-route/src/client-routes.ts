@@ -231,7 +231,8 @@ export interface GetPermittedRoutesParams {
 //     yield chunk;
 //   }
 // };
-
+const backend = process.env.NEXT_PUBLIC_BACKEND;
+const GRPC = 'grpc';
 export const getReservedRoutes = async function* ({
   baseUrl,
   authInfo,
@@ -247,11 +248,14 @@ export const getReservedRoutes = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
+    if (backend === GRPC) {
+      if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+        objectId = chunk?.result?.objects[0]?.objectId;
+        continue;
+      }
+      chunk.result.objects[0].objectId = objectId;
     }
-    chunk.result.objects[0].objectId = objectId;
+
     yield chunk;
   }
 };
@@ -311,11 +315,14 @@ export const getReservedRoute = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
+    if (backend === GRPC) {
+      if (chunk.result.objectId !== '0') {
+        objectId = chunk.result.objectId;
+        continue;
+      }
+      chunk.result.objectId = objectId;
     }
-    chunk.result.objectId = objectId;
+
     yield chunk;
   }
 };

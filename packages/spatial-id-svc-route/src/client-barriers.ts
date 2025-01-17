@@ -216,7 +216,8 @@ export interface GetBarriersParams {
   payload: GetTerrainBarriersRequest;
   abortSignal?: AbortSignal;
 }
-
+const backend = process.env.NEXT_PUBLIC_BACKEND;
+const GRPC = 'grpc';
 /** 空間 ID の範囲内のパブリックバリアを複数取得する */
 export const getBarriers = async function* ({
   baseUrl,
@@ -234,11 +235,14 @@ export const getBarriers = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
+    if (backend === GRPC) {
+      if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+        objectId = chunk?.result?.objects[0]?.objectId;
+        continue;
+      }
+      chunk.result.objects[0].objectId = objectId;
     }
-    chunk.result.objects[0].objectId = objectId;
+
     yield chunk;
   }
 };
@@ -266,11 +270,14 @@ export const getBarrier = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
+    if (backend === GRPC) {
+      if (chunk.result.objectId !== '0') {
+        objectId = chunk.result.objectId;
+        continue;
+      }
+      chunk.result.objectId = objectId;
     }
-    chunk.result.objectId = objectId;
+
     yield chunk;
   }
 };
@@ -352,11 +359,14 @@ export const getPrivateBarriers = async function* ({
     payload,
     abortSignal,
   })) {
-    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-      objectId = chunk?.result?.objects[0]?.objectId;
-      continue;
+    if (backend === GRPC) {
+      if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+        objectId = chunk?.result?.objects[0]?.objectId;
+        continue;
+      }
+      chunk.result.objects[0].objectId = objectId;
     }
-    chunk.result.objects[0].objectId = objectId;
+
     yield chunk;
   }
 };
@@ -384,11 +394,14 @@ export const getPrivateBarrier = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (chunk.result.objectId !== '0') {
-      objectId = chunk.result.objectId;
-      continue;
+    if (backend === GRPC) {
+      if (chunk.result.objectId !== '0') {
+        objectId = chunk.result.objectId;
+        continue;
+      }
+      chunk.result.objectId = objectId;
     }
-    chunk.result.objectId = objectId;
+
     yield chunk;
   }
 };
