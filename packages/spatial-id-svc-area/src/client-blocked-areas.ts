@@ -306,9 +306,6 @@ export interface GetRiskLevelParams {
   abortSignal?: AbortSignal;
 }
 
-const backend = process.env.NEXT_PUBLIC_BACKEND;
-const GRPC = 'grpc';
-
 /** 空間 ID の範囲内の割込禁止エリアを複数取得する */
 export const getBlockedAreas = async function* ({
   baseUrl,
@@ -325,14 +322,11 @@ export const getBlockedAreas = async function* ({
     payload,
     abortSignal,
   })) {
-    if (backend === GRPC) {
-      if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-        objectId = chunk?.result?.objects[0]?.objectId;
-        continue;
-      }
-      chunk.result.objects[0].objectId = objectId;
+    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+      objectId = chunk?.result?.objects[0]?.objectId;
+      continue;
     }
-
+    chunk.result.objects[0].objectId = objectId;
     yield chunk;
   }
 };
@@ -352,14 +346,11 @@ export const getWeatherAreas = async function* ({
     payload,
     abortSignal,
   })) {
-    if (backend === GRPC) {
-      if (chunk?.result?.objects?.[0]?.objectId !== '0') {
-        objectId = chunk?.result?.objects[0]?.objectId;
-        continue;
-      }
-      chunk.result.objects[0].objectId = objectId;
+    if (chunk?.result?.objects?.[0]?.objectId !== '0') {
+      objectId = chunk?.result?.objects[0]?.objectId;
+      continue;
     }
-
+    chunk.result.objects[0].objectId = objectId;
     yield chunk;
   }
 };
@@ -380,29 +371,27 @@ export const getSignalAreas = async function* ({
     payload,
     abortSignal,
   })) {
-    if (backend === GRPC) {
-      const objects = chunk?.result?.objects;
+    const objects = chunk?.result?.objects;
 
-      if (objects?.[0]) {
-        const object = objects[0];
-        const { objectId: currentObjectId, microwave } = object;
+    if (objects?.[0]) {
+      const object = objects[0];
+      const { objectId: currentObjectId, microwave } = object;
 
-        if (currentObjectId !== '0') {
-          objectId = currentObjectId;
-          if (microwave?.mobile) {
-            networkCode = microwave.mobile.plmnId?.mobileNetworkCode ?? networkCode;
-          }
-          continue;
-        }
-
-        object.objectId = objectId;
-
+      if (currentObjectId !== '0') {
+        objectId = currentObjectId;
         if (microwave?.mobile) {
-          microwave.mobile.plmnId = {
-            ...(microwave.mobile.plmnId || {}),
-            mobileNetworkCode: networkCode,
-          };
+          networkCode = microwave.mobile.plmnId?.mobileNetworkCode ?? networkCode;
         }
+        continue;
+      }
+
+      object.objectId = objectId;
+
+      if (microwave?.mobile) {
+        microwave.mobile.plmnId = {
+          ...(microwave.mobile.plmnId || {}),
+          mobileNetworkCode: networkCode,
+        };
       }
     }
 
@@ -443,14 +432,11 @@ export const getWeather = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (backend === GRPC) {
-      if (chunk.result.objectId !== '0') {
-        objectId = chunk.result.objectId;
-        continue;
-      }
-      chunk.result.objectId = objectId;
+    if (chunk.result.objectId !== '0') {
+      objectId = chunk.result.objectId;
+      continue;
     }
-
+    chunk.result.objectId = objectId;
     yield chunk;
   }
 };
@@ -470,14 +456,11 @@ export const getSignalArea = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (backend === GRPC) {
-      if (chunk.result.objectId !== '0') {
-        objectId = chunk.result.objectId;
-        continue;
-      }
-      chunk.result.objectId = objectId;
+    if (chunk.result.objectId !== '0') {
+      objectId = chunk.result.objectId;
+      continue;
     }
-
+    chunk.result.objectId = objectId;
     yield chunk;
   }
 };
@@ -533,14 +516,11 @@ export const getBlockedArea = async function* ({
     payload: { objectId: id },
     abortSignal,
   })) {
-    if (backend === GRPC) {
-      if (chunk.result.objectId !== '0') {
-        objectId = chunk.result.objectId;
-        continue;
-      }
-      chunk.result.objectId = objectId;
+    if (chunk.result.objectId !== '0') {
+      objectId = chunk.result.objectId;
+      continue;
     }
-
+    chunk.result.objectId = objectId;
     yield chunk;
   }
 };
