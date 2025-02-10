@@ -1,24 +1,62 @@
-This folder contains an example Docker Compose setup for running the Spatial ID Viewer application, including both the backend and frontend services.
-このフォルダには、バックエンドおよびフロントエンドサービスを含む、Spatial ID Viewer アプリケーションを実行するための Docker Compose 設定の例が含まれています。
+# Spatial ID Viewer - Docker Compose セットアップ
 
-## Prerequisites
+このフォルダには、**Spatial ID Viewer** アプリケーションを実行するための **Docker Compose** 設定のサンプルが含まれています。このセットアップには、**モックバックエンドサーバー** と **フロントエンドサービス** の両方が含まれており、開発およびテストのための完全な環境を提供します。
 
-Before running the application, ensure you have the following installed:
-アプリケーションを実行する前に、以下がインストールされていることを確認してください:
+## 📌 前提条件
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+アプリケーションを実行する前に、以下がインストールされていることを確認してください。
 
-## How to Run
+- [Docker](https://docs.docker.com/get-docker/) - コンテナ化された実行環境に必要。
+- [Docker Compose](https://docs.docker.com/compose/install/) - 複数のサービスをオーケストレーションするために必要。
 
-1. Navigate to the folder containing the `docker-compose.yml` file:
-   docker-compose.yml ファイルが含まれているフォルダに移動します:
-   cd examples
+## 🚀 実行方法
 
-2. Start the services using Docker Compose:
-   Docker Compose を使用してサービスを起動します:
+以下の手順に従って、Spatial ID Viewer アプリケーションを起動してください。
+
+1. **ターミナルを開き**、`docker-compose.yml` ファイルがあるフォルダに移動します。
+
+   ```sh
+   cd public-viewer-compose
+   ```
+
+2. **Docker Compose を使用してサービスを起動** します。
+
+   ```sh
    docker-compose up
+   ```
 
-3. Open your browser and visit:
-   ブラウザを開いて、以下にアクセスしてください:
-   http://localhost:4200
+   これにより、必要なイメージがダウンロードされ（未取得の場合）、必要なコンテナが起動します。
+
+3. **ウェブブラウザでアプリケーションにアクセス** します。
+   - 🌐 開く: [http://localhost:4200](http://localhost:4200)
+
+## 🔄 サービスの停止
+
+実行中のコンテナを停止するには、サービスが実行されているターミナルで `Ctrl + C` を押します。または、以下のコマンドを使用できます。
+
+```sh
+docker-compose down
+```
+
+このコマンドは、すべての関連コンテナを停止し削除します。
+
+## 📂 フォルダ構成
+
+```
+public-viewer-compose/
+│── docker-compose.yml  # Docker Compose 設定ファイル
+```
+
+## 🛠 トラブルシューティング
+
+- コンテナが起動しない場合は、以下を試してください。
+  ```sh
+  docker-compose up --build
+  ```
+  これにより、イメージの再ビルドを強制してからサービスを起動します。
+- **ポート 4200** が他のアプリケーションで使用されていないことを確認してください。
+- `docker ps` を実行して、必要なコンテナが実行されているか確認してください。
+
+---
+
+💡 さらにサポートが必要ですか？[Docker ドキュメント](https://docs.docker.com/) をチェックするか、問題を報告してください。楽しいコーディングを！ 🚀

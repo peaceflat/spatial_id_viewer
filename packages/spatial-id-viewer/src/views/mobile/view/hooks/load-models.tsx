@@ -122,7 +122,9 @@ export const createSignalMap = (
   const objectId = object.objectId;
   let objectIdOrCode;
   if (modelQuantity == MULTIPLE && type == 'mobile') {
-    objectIdOrCode = object.microwave.mobile.plmnId.mobileNetworkCode;
+    const countryCode = object.microwave?.mobile?.plmnId?.mobileCountryCode ?? '';
+    const networkCode = object.microwave?.mobile?.plmnId?.mobileNetworkCode ?? '';
+    objectIdOrCode = `${countryCode}${networkCode}`;
   } else {
     console.log('objectId', objectId);
     console.log('object', object.microwave[type]);
