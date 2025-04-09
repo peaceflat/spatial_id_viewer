@@ -6,6 +6,9 @@ import {
   ApiHttpStatusError,
   ApiNotFoundError,
   ApiServiceError,
+  InvalidRequestError,
+  ResponseTooLargeError,
+  VoxelTypeError,
 } from 'spatial-id-svc-base';
 
 export const setCustomError = (error: unknown) => {
@@ -15,8 +18,18 @@ export const setCustomError = (error: unknown) => {
     toast.error('サーバーから読み取れません', { position: 'bottom-center' });
   } else if (error instanceof ApiNotFoundError) {
     toast.error('リソースが見つかりませんでした。', { position: 'bottom-center' });
+  } else if (error instanceof InvalidRequestError) {
+    toast.error('IDの形式が不正です。半角数字で入力してください。', { position: 'bottom-center' });
   } else if (error instanceof ApiHttpStatusError) {
     toast.error('不明なエラーが発生しました。しばらくしてからもう一度お試しください。', {
+      position: 'bottom-center',
+    });
+  } else if (error instanceof ResponseTooLargeError) {
+    toast.error('オブジェクトが大きすぎます', {
+      position: 'bottom-center',
+    });
+  } else if (error instanceof VoxelTypeError) {
+    toast.error(error.message, {
       position: 'bottom-center',
     });
   } else if (error instanceof ApiDomError) {
