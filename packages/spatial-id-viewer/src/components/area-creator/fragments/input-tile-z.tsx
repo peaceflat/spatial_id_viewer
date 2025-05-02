@@ -17,7 +17,6 @@ export const InputTileZFragment = memo(() => {
   const [tileZ, setTileZ] = useState<number>(20);
   const [dirty, setDirty] = useState(false);
 
-  // TODO: 初期値
   useMount(() => {
     const value = currentAreaTileZ;
     if (value === null) {

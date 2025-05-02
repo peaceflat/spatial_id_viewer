@@ -36,7 +36,6 @@ export const SelectPointFragment = memo((props: SelectPointFragmentProps) => {
     });
   }, [clickedPoint]);
 
-  // SelectPoint2 時のみ
   const onBackButtonClick = () => {
     update((s) => {
       s.areas.removeCurrentArea();
@@ -44,7 +43,6 @@ export const SelectPointFragment = memo((props: SelectPointFragmentProps) => {
     });
   };
 
-  // SelectPoint1 時のみ
   const onCancelButtonClick = () => {
     update((s) => (s.page = Pages.SelectAddOrSend));
   };

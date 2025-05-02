@@ -1,6 +1,5 @@
 import { Cartesian3, Cartographic, WebMercatorTilingScheme } from 'cesium';
 import { immerable, produce } from 'immer';
-import { Input } from 'postcss';
 import { FC } from 'react';
 import { Mutate, StoreApi } from 'zustand';
 
@@ -81,7 +80,6 @@ class Area implements IArea {
 
   async setTileZ(value: number | null) {
     this.tileZ = value;
-    // 高さ方向の指定を一旦リセット
     this.tileF = null;
 
     await this.update();
@@ -349,10 +347,6 @@ class Store {
       })
     );
   };
-
-  // readonly resetHard = () =>{
-  //   this.set(s=>s.areas.reset())
-  // }
 }
 
 export const [WithStore, useStoreApi] = createStoreHandlers(Store);

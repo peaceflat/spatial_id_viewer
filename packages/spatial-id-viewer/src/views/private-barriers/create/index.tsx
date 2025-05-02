@@ -8,8 +8,6 @@ import { AreaCreator, IAreas } from '#app/components/area-creator';
 import { WithAuthGuard } from '#app/components/auth-guard';
 import { apiBaseUrl } from '#app/constants';
 import { useAuthInfo } from '#app/stores/auth-info';
-import { AreaAdditionalInfoFragment } from '#app/views/private-barriers/create/fragments/area-additional-info';
-import { WholeAreaInfoFragment } from '#app/views/private-barriers/create/fragments/whole-area-info';
 import { AreaAdditionalInfo, WholeAreaInfo } from '#app/views/private-barriers/create/interfaces';
 
 /** モデルを登録する関数を返す React Hook */
@@ -30,15 +28,12 @@ const useRegister = () => {
                     ID: spatialId,
                   },
                   vacant: true,
-                  // risk: area.additionalInfo.risk,
                 } as BarrierDefinitionVoxel;
               })
             )
             .flat(),
         },
       },
-      // clearance: areas.wholeAreaInfo.clearance,
-      // status: 'STATUS_DONE',
     } as BarrierNew;
 
     return await createBuildingBarrier({
@@ -61,8 +56,6 @@ const PrivateBarrierCreator = () => {
       </Head>
       <AreaCreator<WholeAreaInfo, AreaAdditionalInfo>
         register={register}
-        // areaAdditionalInfoFragment={AreaAdditionalInfoFragment}
-        // wholeAreaInfoFragment={WholeAreaInfoFragment}
         areaAdditionalInfoFragment={null}
         wholeAreaInfoFragment={null}
       />

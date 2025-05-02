@@ -1,8 +1,7 @@
-import { Cesium3DTileStyle, Color, Viewer as CesiumViewer } from 'cesium';
-import { Tabs } from 'flowbite-react';
+import { Cesium3DTileStyle, Viewer as CesiumViewer } from 'cesium';
 import { memo, ReactNode, useEffect, useRef } from 'react';
 import { useLatest, useMount, useShallowCompareEffect } from 'react-use';
-import { CesiumComponentRef, Entity, PointGraphics, PolylineGraphics } from 'resium';
+import { CesiumComponentRef } from 'resium';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
@@ -196,42 +195,6 @@ const AreaViewerLayout = <Metadata extends Record<string, unknown> = Record<stri
           {[...models.entries()].map(([modelId, model]) => (
             <CuboidCollectionModel key={modelId} data={model} style={props.tilesetStyle} />
           ))}
-
-          {/* {[...models.entries()].map(([modelId, model]) =>
-            Array.from({ length: model.cuboids.length - 1 }).map((_, i) => {
-              const p1 = model.cuboids[i];
-              const p2 = model.cuboids[i + 1];
-
-              return (
-                <Entity
-                  id={`${modelId}-${p1.metadata.spatialId}`}
-                  key={`${modelId}-${p1.metadata.spatialId}`}
-                >
-                  <PolylineGraphics
-                    width={4}
-                    material={(() => {
-                      return Color.YELLOW;
-                    })()}
-                    positions={[p1.location, p2.location]}
-                  />
-                </Entity>
-              );
-            })
-          )}
-          {[...models.entries()].map(([modelId, model]) =>
-            model.cuboids.map((p) => (
-              <Entity
-                key={`l-${modelId}-${p.metadata.spatialId}`}
-                id={`l-${modelId}-${p.metadata.spatialId}`}
-                position={p.location}
-                onClick={() => {
-                  update((s) => (s.selectedCtrls[0] = modelId));
-                }}
-              >
-                <PointGraphics pixelSize={16} color={Color.YELLOW} />
-              </Entity>
-            ))
-          )} */}
         </Viewer>
         <Navigation>
           {page === Pages.SelectFunction && <SelectFunctionFragment />}

@@ -28,7 +28,6 @@ import { SelectActionForPointFragment } from '#app/components/route-creator/frag
 import { SelectPointOrFeatureFragment } from '#app/components/route-creator/fragments/select-point-or-feature';
 import { SplitLineFragment } from '#app/components/route-creator/fragments/split-line';
 import { WaypointSpecificInfoProxyFragment } from '#app/components/route-creator/fragments/waypoint-specific-info-proxy';
-import { WholeRouteInfoProxyFragment } from '#app/components/route-creator/fragments/whole-route-info-proxy';
 import {
   IWaypoints,
   Pages,

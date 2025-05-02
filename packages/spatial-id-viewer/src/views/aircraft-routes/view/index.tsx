@@ -21,7 +21,6 @@ import { WithAuthGuard } from '#app/components/auth-guard';
 import { apiBaseUrl } from '#app/constants';
 import { useAuthInfo } from '#app/stores/auth-info';
 import AdditionalDateSettings from '#app/views/aircraft-routes/view/AdditionalDate';
-// import { useStoreApi, WithStore } from '#app/views/aircraft-routes/view/store';
 
 /** 表示するメタデータ */
 

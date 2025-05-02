@@ -34,8 +34,6 @@ export interface GetReservedAreasRequest {
 export interface GetReservedAreasResponse {
   responseHeader?: CommonResponseHeader;
   objects: SpatialDefinition[];
-  // reservedAreas: ReservedArea[];
-  // status: StreamStatus;
 }
 export interface GetEmergencyAreas {
   objects: SpatialDefinition[];
@@ -43,9 +41,6 @@ export interface GetEmergencyAreas {
 
 export interface GetReservedAreaResponse extends SpatialDefinition {
   responseHeader?: CommonResponseHeader;
-  // reservedArea: ReservedArea;
-  // result: SpatialDefinition;
-  // error: ErrorResponse;
 }
 
 export interface CreateReservedAreaRequest {
@@ -65,7 +60,6 @@ export interface CreateReservedAreaResponse {
 export interface GetReservedAreasParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  // payload: GetReservedAreasRequest;
   payload: GetAreaRequest;
   abortSignal?: AbortSignal;
 }
@@ -129,7 +123,6 @@ export const getReservedArea = async function* ({
 export interface CreateReservedAreaParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  // payload: CreateReservedAreaRequest;
   payload: CreateEmergencyAreaRequest;
   abortSignal?: AbortSignal;
 }

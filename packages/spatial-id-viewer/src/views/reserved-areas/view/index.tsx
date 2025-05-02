@@ -10,8 +10,6 @@ import {
   GetEmergencyAreas,
   getReservedArea,
   getReservedAreas,
-  GetReservedAreasResponse,
-  ReservedArea,
 } from 'spatial-id-svc-area';
 import { StreamResponse } from 'spatial-id-svc-base';
 import { RequestTypes } from 'spatial-id-svc-common';

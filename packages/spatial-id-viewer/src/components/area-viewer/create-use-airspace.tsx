@@ -1,8 +1,8 @@
-import { castDraft, Draft } from 'immer';
+import { castDraft } from 'immer';
 import { useCallback, useMemo } from 'react';
 import { useLatest } from 'react-use';
 
-import { CuboidCollection, SpatialId } from 'spatial-id-converter';
+import { CuboidCollection } from 'spatial-id-converter';
 
 import { IStore, ModelControllers } from '#app/components/area-viewer';
 import { DisplayDetails } from '#app/components/area-viewer/interface';
@@ -19,10 +19,7 @@ export interface CreateUseModelsProps<
   /** ID を指定してモデルを削除する */
   /** モデルがアンロードされる際のフック */
   /** Promise 外でエラーが発生した場合のエラーの格納先 */
-  loadAirSpaceModels?: (
-    bbox: DisplayDetails
-    // modelTypes: string[]
-  ) => Promise<Map<string, CuboidCollection<Metadata>>[]>;
+  loadAirSpaceModels?: (bbox: DisplayDetails) => Promise<Map<string, CuboidCollection<Metadata>>[]>;
 
   loadAirSpaceModelsStream?: (
     bbox: DisplayDetails

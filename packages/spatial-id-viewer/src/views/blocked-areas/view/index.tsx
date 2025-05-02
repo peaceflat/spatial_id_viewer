@@ -148,14 +148,10 @@ const useDeleteModel = () => {
 
 /** モデルに関連する操作を行う関数群を返す React Hook */
 const useModels = (store: IStore<BlockedAreaInfo>): ModelControllers => {
-  // const updateModels = useLatest(store.replaceModels);
-
   const loadModelImpl = useLoadModel();
   const loadModelsImpl = useLoadModels();
   const deleteModelImpl = useDeleteModel();
-  // const watchModelsImpl = useWatchModels();
 
-  // まず他の機能との共通のインターフェースを作り、createUseModels でベースとなる関数群を作る
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const onUnloadModels = useCallback(async () => {
@@ -172,10 +168,8 @@ const useModels = (store: IStore<BlockedAreaInfo>): ModelControllers => {
 
   const { loadModel, loadModels: loadModelsBase, deleteModel, unloadModels } = useModelsBase(store);
 
-  // createUseModels により作られた loadModels 関数をラップして監視処理をミックスする
   const loadModels = async (bbox: DisplayDetails) => {
     await loadModelsBase(bbox);
-    // watchModels(bbox);
   };
 
   useUnmount(() => {

@@ -5,7 +5,7 @@ import {
   ScreenSpaceEventType,
   Viewer as CesiumViewer,
 } from 'cesium';
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import {
   CesiumComponentRef,
   Entity,
@@ -45,10 +45,9 @@ import {
   WifiInfoFragmentProps,
   WithStore,
 } from '#app/components/area-creator/store';
-import { Navigation, NavigationWR } from '#app/components/navigation';
+import { NavigationWR } from '#app/components/navigation';
 import { CurrentWeatherInfoProxy } from '#app/components/tab-area-creator/fragments/current-weather-info-proxy';
 import { WeatherForecastInfoProxy } from '#app/components/tab-area-creator/fragments/weather-forecast-info-proxy';
-import { Viewer, ViewerContainer } from '#app/components/viewer';
 import { CuboidCollectionModel } from '#app/components/viewer/cuboid-collection-model';
 
 export interface AreaCreatorProps<
@@ -130,7 +129,6 @@ const AreaCreatorLayout = <
   WifiInfo,
   RsiInfo
 >) => {
-  //   const viewerRef = useRef<CesiumComponentRef<CesiumViewer>>();
   const viewerRef = reference;
 
   const store = useStoreApi();
@@ -138,7 +136,6 @@ const AreaCreatorLayout = <
   const areas = useStore(store, (s) => s.areas);
   const currentArea = useStore(store, (s) => s.areas.current);
   const update = useStore(store, (s) => s.update);
-  const reset = useStore(store, (s) => s.reset);
 
   useEffect(
     () => void update((s) => (s.wholeAreaInfoFragment = wholeAreaInfoFragment)),

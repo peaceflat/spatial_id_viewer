@@ -276,7 +276,6 @@ export const Pages = {
   SplitLine: 4,
   SelectActionForPoint: 5,
   MovePoint: 6,
-  // InputWholeRouteInfo: 7,
   InputRouteInfo: 7,
   Register: 8,
 } as const;

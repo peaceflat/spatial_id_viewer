@@ -104,7 +104,7 @@ type States = (typeof States)[keyof typeof States];
 
 /** 複数取得系 API を呼び、モデルを 1 つ表示させる画面 */
 export const ShowModelsFragment = memo(
-  ({ requestType, signalType, stream, children }: ShowModelsFragmentProps) => {
+  ({ requestType, stream, children }: ShowModelsFragmentProps) => {
     const store = useStoreApi();
     const startTime = useStore(store, (s) => s.startTime);
     const endTime = useStore(store, (s) => s.endTime);
@@ -163,7 +163,6 @@ export const ShowModelsFragment = memo(
       ).toString();
 
       const displayDetails: any = {
-        // figure: { ...figure, identification: { ID: newSpatialID } },
         figure: { identification: { ID: newSpatialID } },
       };
 

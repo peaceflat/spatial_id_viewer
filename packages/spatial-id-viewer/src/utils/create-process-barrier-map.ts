@@ -30,7 +30,6 @@ export const createBarrierMap = (
         SpatialId.fromString<Info>(spatialId, {
           id: objectId,
           spatialId,
-          // risk: 10,
         })
       );
     } catch (e) {
