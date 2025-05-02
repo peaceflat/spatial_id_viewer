@@ -19,7 +19,6 @@ const Login = () => {
   const removeBackTo = useAuthInfo((s) => s.removeBackTo);
 
   const [user, setUser] = useState('');
-  // const [organizationID, setOrganizationID] = useState('');
   const [password, setPassword] = useState('');
   const [signInCompleted, setSignInCompleted] = useState(false);
 
@@ -30,16 +29,12 @@ const Login = () => {
   const onPasswordInput = (ev: ChangeEvent<HTMLInputElement>) => {
     setPassword(ev.target.value);
   };
-  // const onOrganizationInput = (ev: ChangeEvent<HTMLInputElement>) => {
-  //   setOrganizationID(ev.target.value);
-  // };
 
   const onSignInClick = async () => {
     try {
       const authInfo = await login({
         baseUrl: apiBaseUrl,
         userID: user,
-        // organizationID,
         password,
       });
       setAuthInfo(authInfo);
@@ -57,7 +52,6 @@ const Login = () => {
   }, [signInCompleted]);
 
   const userId = useId();
-  // const organizationId = useId();
   const passwordId = useId();
 
   return (
@@ -78,16 +72,7 @@ const Login = () => {
               required={true}
             />
           </div>
-          {/* <div>
-            <Label htmlFor={organizationId} value="組 織" />
-            <TextInput
-              id={organizationId}
-              value={organizationID}
-              onChange={onOrganizationInput}
-              type="text"
-              required={false}
-            />
-          </div> */}
+
           <div>
             <Label htmlFor={passwordId} value="パスワード" />
             <TextInput

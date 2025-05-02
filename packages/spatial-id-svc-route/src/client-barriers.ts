@@ -169,27 +169,6 @@ export interface SpatialFigure {
     ID: string;
   };
 }
-// export interface SpatialFigure {
-//   identification: {
-//     ID: string;
-//   };
-//   tube: {
-//     start: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     end: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     radian: number;
-//   };
-//   polygon: any;
-// }
 
 export interface GetBuildingBarriersRequest {
   figure: SpatialFigure;
@@ -224,7 +203,6 @@ export const getBarriers = async function* ({
   payload,
   abortSignal,
 }: GetBarriersParams) {
-  // for await (const chunk of fetchJsonStream<GetBarrierResponse>({
   let objectId = '0';
   for await (const chunk of fetchJsonStream<GetBarriersResponseNew>({
     method: 'POST',
@@ -278,7 +256,6 @@ export const getBarrier = async function* ({
 export interface CreateBarrierParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  // payload: Barrier;
   payload: BarrierNew;
   abortSignal?: AbortSignal;
 }
@@ -293,7 +270,6 @@ export const createBarrier = async ({
   const resp = await fetchRawJson<successResponse | ErrorResponse>({
     method: 'POST',
     baseUrl,
-    // path: '/route_service/barriers',
     path: '/uas/api/airmobility/v3/put-object',
     authInfo,
     payload,
@@ -396,7 +372,6 @@ export const getPrivateBarrier = async function* ({
 export interface CreatePrivateBarrierParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  // payload: PrivateBarrier;
   payload: BarrierNew;
   abortSignal?: AbortSignal;
 }

@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { useLatest } from 'react-use';
 
-import { CuboidCollection, SpatialId } from 'spatial-id-converter';
+import { CuboidCollection } from 'spatial-id-converter';
 import { RequestTypes } from 'spatial-id-svc-common';
 import {
   deleteBarrier,

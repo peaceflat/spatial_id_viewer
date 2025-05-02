@@ -1,10 +1,7 @@
 import { Button } from 'flowbite-react';
-import { set } from 'immer/dist/internal';
 import { memo, useCallback, useState } from 'react';
 import { useMount } from 'react-use';
 import { useStore } from 'zustand';
-
-import { successResponse } from 'spatial-id-svc-route';
 
 import { errorMessages } from '#app/components/area-creator/interfaces';
 import { useStoreApi } from '#app/components/area-creator/store';

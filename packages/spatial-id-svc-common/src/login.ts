@@ -36,7 +36,6 @@ export const login = async ({
     path: '/gen/api/generic/v3/connect-server',
     payload: {
       userID,
-      // organizationID,
       password,
     } as LoginRequestBody,
     abortSignal,

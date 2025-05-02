@@ -2,19 +2,13 @@ import Head from 'next/head';
 import { useCallback } from 'react';
 import { useLatest } from 'react-use';
 
-import {
-  BlockedAreaRquest,
-  createBlockedArea,
-  CreateBlockedAreaRequest,
-} from 'spatial-id-svc-area';
-import { RestrictionTypes, SpatialIdentification } from 'spatial-id-svc-common';
-import { BarrierDefinitionVoxel, BarrierNew } from 'spatial-id-svc-route';
+import { BlockedAreaRquest, createBlockedArea } from 'spatial-id-svc-area';
+import { BarrierDefinitionVoxel } from 'spatial-id-svc-route';
 
 import { AreaCreator, IAreas } from '#app/components/area-creator';
 import { WithAuthGuard } from '#app/components/auth-guard';
 import { apiBaseUrl } from '#app/constants';
 import { useAuthInfo } from '#app/stores/auth-info';
-import { dateToStringUnixTime } from '#app/utils/date-to-string-unix-time';
 import { RestrictiontypeFragment } from '#app/views/blocked-areas/create/fragments/restriction-additional-info';
 import {
   RestrictionAdditionalInfo,

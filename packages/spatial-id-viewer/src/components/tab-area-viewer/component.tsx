@@ -1,5 +1,5 @@
 import { Cesium3DTileStyle, Viewer as CesiumViewer } from 'cesium';
-import { memo, ReactNode, useCallback, useEffect, useState } from 'react';
+import { memo, ReactNode, useEffect, useState } from 'react';
 import { useLatest, useMount, useShallowCompareEffect } from 'react-use';
 import { CesiumComponentRef } from 'resium';
 import { useStore } from 'zustand';

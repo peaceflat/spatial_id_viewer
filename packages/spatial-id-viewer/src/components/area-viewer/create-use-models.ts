@@ -53,11 +53,11 @@ export const createUseModels = <Metadata extends Record<string, unknown> = Recor
     const loadModels = useCallback(async (bbox: DisplayDetails) => {
       for await (const models of loadModelsImpl.current(bbox)) {
         replaceModels.current((prevModels) => {
-          const newModels = new Map(prevModels); // Clone previous state
+          const newModels = new Map(prevModels);
 
           for (const [key, value] of models.entries()) {
             const mutableModel = castDraft(value) as WritableDraft<CuboidCollection<any>>;
-            newModels.set(key, mutableModel); // Ensure mutable draft
+            newModels.set(key, mutableModel);
           }
 
           return newModels;

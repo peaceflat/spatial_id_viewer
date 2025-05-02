@@ -1,5 +1,4 @@
-import { TextInput } from 'flowbite-react';
-import { ChangeEvent, memo } from 'react';
+import { memo } from 'react';
 import { useStore } from 'zustand';
 import { shallow } from 'zustand/shallow';
 
@@ -16,14 +15,6 @@ const AdditionalDateSettings = memo(() => {
     (s) => [s.startTime, s.endTime, s.update],
     shallow
   );
-
-  // const onStartTimeChange = (startTime: Date) => {
-  //   update((s) => (s.startTime = startTime));
-  // };
-
-  // const onEndTimeChange = (endTime: Date) => {
-  //   update((s) => (s.endTime = endTime));
-  // };
 
   const onStartTimeChange = (startTime: Date) => {
     if (startTime instanceof Date && !isNaN(startTime.getTime())) {

@@ -2,7 +2,7 @@ import { castDraft, Draft } from 'immer';
 import { useCallback, useMemo } from 'react';
 import { useLatest } from 'react-use';
 
-import { CuboidCollection, SpatialId } from 'spatial-id-converter';
+import { CuboidCollection } from 'spatial-id-converter';
 
 import { IStore, ModelControllers } from '#app/components/area-viewer';
 import { DisplayDetails } from '#app/components/area-viewer/interface';

@@ -46,18 +46,6 @@ const MobileStrengthViewer = (props: Props) => {
     deleteModel,
   });
 
-  // const changeMin = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const value = Math.min(Number(e.target.valueAsNumber), maxValue - 1);
-  //   setMinValue(value);
-  //   props.setMin(value);
-  // };
-
-  // const changeMax = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const value = Math.min(Math.max(Number(e.target.valueAsNumber), minValue + 1));
-  //   setMaxValue(value);
-  //   props.setMax(value);
-  // };
-
   return (
     <>
       <Head>

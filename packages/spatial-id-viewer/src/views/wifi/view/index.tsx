@@ -1,5 +1,4 @@
 import { Cesium3DTileStyle, Viewer } from 'cesium';
-import { RangeSlider } from 'flowbite-react';
 import Head from 'next/head';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { CesiumComponentRef } from 'resium';

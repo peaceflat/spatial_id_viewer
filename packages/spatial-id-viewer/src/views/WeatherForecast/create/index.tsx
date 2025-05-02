@@ -1,6 +1,6 @@
 import { Viewer } from 'cesium';
 import Head from 'next/head';
-import { RefObject, useCallback, useEffect } from 'react';
+import { RefObject, useCallback } from 'react';
 import { useLatest } from 'react-use';
 import { CesiumComponentRef } from 'resium';
 

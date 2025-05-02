@@ -16,14 +16,14 @@ export const createFigure = (
 ) => {
   const figure = {
     identification: {
-      ID: spatialId, // Your calculated SpatialId
+      ID: spatialId,
     },
     tube: {
       start: tubeStart,
       end: tubeEnd,
       radian: radian,
     },
-    polygon: polygon, // Define as needed
+    polygon: polygon,
   };
 
   return figure;

@@ -188,27 +188,6 @@ export interface SpatialFigure {
     ID: string;
   };
 }
-// export interface SpatialFigure {
-//   identification: {
-//     ID: string;
-//   };
-//   tube: {
-//     start: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     end: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     radian: number;
-//   };
-//   polygon: any;
-// }
 
 export interface RiskLevel {
   id: {
@@ -242,8 +221,6 @@ export interface GetBlockedAreasRequest {
 
 export interface GetBlockedAreasResponse extends SpatialDefinitions {
   responseHeader?: CommonResponseHeader;
-  // blockedAreas: BlockedArea[];
-  // status: StreamStatus;
 }
 
 export interface GetRiskLevelsResponse {
@@ -257,7 +234,6 @@ export interface GetBlockedAreas {
 
 export interface GetBlockedAreaResponse extends SpatialDefinition {
   responseHeader?: CommonResponseHeader;
-  // blockedArea: BlockedArea;
   result: SpatialDefinition;
   error: ErrorResponse;
 }
@@ -294,7 +270,6 @@ export interface WatchBlockedAreasResponse {
 export interface GetBlockedAreasParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  // payload: GetBlockedAreasRequest;
   payload: GetAreaRequest;
   abortSignal?: AbortSignal;
 }
@@ -531,7 +506,6 @@ export const getBlockedArea = async function* ({
 export interface CreateBlockedAreaParams {
   baseUrl: string;
   authInfo: AuthInfo;
-  // payload: CreateBlockedAreaRequest;
   payload: BlockedAreaRquest;
   abortSignal?: AbortSignal;
 }

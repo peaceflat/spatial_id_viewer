@@ -33,51 +33,9 @@ export interface Figure {
     ID: SpatialId;
   };
 }
-// export interface Figure {
-//   identification: {
-//     ID: SpatialId;
-//   };
-//   tube: {
-//     start: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     end: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     radian: number;
-//   };
-//   polygon: any;
-// }
 
 export interface FigureRequest {
   identification: {
     ID: string;
   };
 }
-// export interface FigureRequest {
-//   identification: {
-//     ID: string;
-//   };
-//   tube: {
-//     start: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     end: {
-//       latitude: number;
-//       longitude: number;
-//       altitude: number;
-//       altitudeAttribute: string;
-//     };
-//     radian: number;
-//   };
-//   polygon: any;
-// }

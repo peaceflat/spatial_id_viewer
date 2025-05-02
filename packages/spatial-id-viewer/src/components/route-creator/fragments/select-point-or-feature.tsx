@@ -49,10 +49,7 @@ export const SelectPointOrFeatureFragment = memo(() => {
   }, [clickedPoint]);
 
   const onCompleteButtonClick = async () => {
-    update(
-      // (s) => (s.page = hasWholeRouteInfoFragment ? Pages.InputWholeRouteInfo : Pages.Register)
-      (s) => (s.page = hasWholeRouteInfoFragment ? Pages.InputRouteInfo : Pages.Register)
-    );
+    update((s) => (s.page = hasWholeRouteInfoFragment ? Pages.InputRouteInfo : Pages.Register));
   };
 
   return hasWaypoint ? (
